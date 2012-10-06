@@ -1,0 +1,36 @@
+html, body {
+    height: 100%;
+    margin-top:40px;
+}
+
+#tasks {
+}
+
+.task {
+    cursor: pointer;
+    text-align:left;
+    margin-bottom:30px;
+}
+
+.completed-task {
+    text-decoration: line-through;
+}
+
+#wrap {
+    min-height: 100%;
+}
+#main {
+    overflow:auto;
+    padding-bottom:135px; /* this needs to be bigger than footer height*/
+    padding-left:20px;
+}
+
+.footer {
+    position: relative;
+    margin-top: -130px; /* negative value of footer height */
+    height: 130px;
+    clear:both;
+    padding-top:20px;
+    text-align:center;
+} 
+
