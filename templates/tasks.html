@@ -10,13 +10,12 @@
         <div class="navbar navbar-fixed-top">
             <div class="navbar-inner">
                 <div class="container">
-                    <a href="#" class="pull-left btn"><i class="icon-arrow-left"></i></a></li>
-                    <a href="#" class="pull-right btn"><i class="icon-arrow-right"></i></a></li>
+                    <a href="/?date={{ yesterday|date:'Ymd' }}" class="pull-left btn"><i class="icon-arrow-left"></i></a></li>
+                    <a href="/?date={{ tomorrow|date:'Ymd' }}" class="pull-right btn {% if date_to_view == today %}disabled{% endif %}"><i class="icon-arrow-right"></i></a></li>
                     </ul>
                 </div>
             </div>
         </div>
-
 
         <div id="wrap">
             <div id="main" class="container">
@@ -25,17 +24,17 @@
                         <h1>Just Two Tasks 
                             <small>What two things will you accomplish today?</small></h1>
                     </div>
-                    
                 </div>
+
                 <div class="row-fluid">
-                    <form action="/" method="POST">{% csrf_token %}
+                    <form action="/add_tasks" method="POST">{% csrf_token %}
                         <div id="tasks">
                             {% if tasks %}
                             {% for task in tasks %}
                             <div class="row-fluid">
                                 <div class="task input-prepend input-append">
                                     {% if task_to_edit == task.id %}
-                                    <a href="/?complete_task={{ task.id }}" 
+                                    <a href="/complete_task?task={{ task.id }}" 
                                         class="btn {% if task.is_complete %}active{% endif %}">
                                         <i class="icon-ok"></i>
                                     </a>
@@ -43,18 +42,21 @@
                                            class="input-xxlarge" 
                                            type="text" 
                                            value="{{ task.task }}">
-                                   <input type="hidden" 
-                                          name="task_ids[]" 
-                                          value="{{ task.id }}">
-                                    {% else %}
-                                    <a href="/?complete_task={{ task.id }}" 
-                                       class="btn {% if task.is_complete %}active{% endif %}">
-                                       <i class="icon-ok"></i>
-                                   </a>
-                                   <a href="/?edit_task={{ task.id }}" 
-                                      class="task input-xxlarge uneditable-input {% if task.is_complete %}completed-task{% endif %}">{{ task.task }}</a>
+                                    <input type="hidden" 
+                                           name="task_ids[]" 
+                                           value="{{ task.id }}">
+                                     {% else %}
+                                     <a href="/complete_task?task={{ task.id }}" 
+                                        class="btn {% if task.is_complete %}active{% endif %}">
+                                        <i class="icon-ok"></i>
+                                    </a>
+                                    <a href="/?edit_task={{ task.id }}" 
+                                       class="task input-xxlarge uneditable-input 
+                                              {% if task.is_complete %}completed-task{% endif %}">
+                                              {{ task.task }}
+                                     </a>
                                     {% endif %}
-                                    <a href="/?delete_task={{ task.id }}" class="btn"><i class="icon-remove"></i></a>
+                                    <a href="/delete_task?task={{ task.id }}" class="btn"><i class="icon-remove"></i></a>
                                 </div>
                             </div>
                             {% endfor %}
@@ -65,7 +67,7 @@
                                 <a href="/?complete_task={{ task.id }}" class="btn disabled"><i class="icon-ok"></i></a>
                                 <input name="tasks[]" class="task input-xxlarge" type="text">
                                 <input type="hidden" name="task_ids[]" value="0">
-                                <a href="/?delete_task={{ task.id }}" class="btn disabled"><i class="icon-remove"></i></a>
+                                <a href="/delete_task?task={{ task.id }}" class="btn disabled"><i class="icon-remove"></i></a>
                             </div>
                             {% endfor %}
                             <p>
