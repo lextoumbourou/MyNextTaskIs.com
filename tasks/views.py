@@ -1,14 +1,16 @@
 from datetime import datetime, timedelta
 
 from django.core.context_processors import csrf
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.template import RequestContext
 from django.shortcuts import render_to_response
+from lazysignup.decorators import allow_lazy_user
 
 from justtwotasks.tasks.models import Task
 
 MAX_TASKS = 2
 
+@allow_lazy_user
 def main(request):
     """Collects todays tasks and return template to display to user"""
     # Initialise key variables with sensible defaults
@@ -29,8 +31,11 @@ def main(request):
     yesterday = date - timedelta(days=1) 
     tomorrow = date + timedelta(days=1)
 
+    user = request.user
+
     # Get all of today's tasks
-    tasks = Task.objects.filter(created__year=date.year,
+    tasks = Task.objects.filter(user=user,
+                                created__year=date.year,
                                 created__month=date.month,
                                 created__day=date.day).order_by('id')
 
@@ -48,6 +53,7 @@ def main(request):
                               args,
                               context_instance=RequestContext(request))
 
+@allow_lazy_user
 def add_tasks(request):
     """Take an array of tasks and add to the database, if a task_id is
     provided, will update existing task. Redirects home when finished.
@@ -55,6 +61,7 @@ def add_tasks(request):
     """
     if request.method == 'POST' and 'tasks[]' in request.POST:
         tasks = request.POST.getlist('tasks[]')
+        user = request.user
         if 'task_ids[]' in request.POST:
             task_ids = request.POST.getlist('task_ids[]')
 
@@ -65,30 +72,34 @@ def add_tasks(request):
             key = i[0]
             # If we've set the key, we're updating an existing task
             if int(task_ids[key]):
-                task = Task.objects.get(pk=int(task_ids[key]))
+                task = Task.objects.get(user=user, pk=int(task_ids[key]))
                 task.task = tasks[key]
                 task.save()
             # Otherwise, it's brand new
             else:
-                Task.objects.create(task=tasks[key], is_complete=False)
+                Task.objects.create(user=user, task=tasks[key], is_complete=False)
 
     return HttpResponseRedirect("/")
 
+@allow_lazy_user
 def delete_task(request):
     """Delete a single task, if it exists then redirect user home"""
     if request.method == 'GET' and 'task' in request.GET:
-        task = Task.objects.get(pk=int(request.GET['task']))
+        user = request.user
+        task = Task.objects.get(user=user, pk=int(request.GET['task']))
         task.delete()
 
     return HttpResponseRedirect("/")
 
+@allow_lazy_user
 def complete_task(request):
     """Set a task to the opposite completion status to what it current is
     eg if it's False, make it True. Then, redirect home
 
     """
     if request.method == 'GET' and 'task' in request.GET:
-        task = Task.objects.get(pk=int(request.GET['task']))
+        user = request.user
+        task = Task.objects.get(user=user, pk=int(request.GET['task']))
         if task.is_complete:
             task.is_complete = False
         else:
@@ -96,5 +107,3 @@ def complete_task(request):
         task.save()
 
     return HttpResponseRedirect("/")
-
-

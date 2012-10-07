@@ -4,12 +4,16 @@ html, body {
 }
 
 #tasks {
+    text-align:center;
+}
+
+.task-input {
+    cursor: pointer;
+    text-align:left;
 }
 
 .task {
-    cursor: pointer;
-    text-align:left;
-    margin-bottom:30px;
+    margin-bottom: 30px;
 }
 
 .completed-task {
