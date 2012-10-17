@@ -1,0 +1,14 @@
+{% extends "parent.html" %}
+
+{% load i18n %}
+
+{% block content %}
+<h2>Register</h2>
+    <form method="post" action="{% url lazysignup_convert %}">
+        {{ form.as_p }}
+        {% csrf_token %}
+        <input type="hidden" name="redirect_to" value="{{ redirect_to }}">
+        <input class="btn" type="submit" value="{% trans "Submit" %}" />
+    </form>
+{% endblock %}
+  

@@ -1,91 +1,55 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <title>Just Two Tasks</title>
-        <!-- Bootstrap -->
-        <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-        <link href="/static/css/default.css" rel="stylesheet">
-    </head>
-    <body>
-        <div class="navbar navbar-fixed-top">
-            <div class="navbar-inner">
-                <div class="container">
-                    <!--
-a href="/?date={{ yesterday|date:'Ymd' }}" class="pull-left btn"><i class="icon-arrow-left"></i></a></li>
-                                        <a href="/?date={{ tomorrow|date:'Ymd' }}" class="pull-right btn {% if date_to_view == today %}disabled{% endif %}"><i class="icon-arrow-right"></i></a></li>-->
-                    </ul>
-                </div>
+{% extends "parent.html" %}
+
+{% block content %}
+<div class="row-fluid">
+<form id="task-form" action="/add_tasks" method="POST">{% csrf_token %}
+    <div id="tasks">
+        {% if tasks %}
+        {% for task in tasks %}
+        <div class="row-fluid">
+            <div class="task input-prepend input-append">
+                {% if task_to_edit == task.id %}
+                <a href="/complete_task?task={{ task.id }}" 
+                    class="btn {% if task.is_complete %}active{% endif %}">
+                    <i class="icon-ok"></i>
+                </a>
+                <input name="tasks[]" 
+                       class="task-input input-xxlarge" 
+                       type="text" 
+                       value="{{ task.task }}">
+                <input type="hidden" 
+                       name="task_ids[]" 
+                       value="{{ task.id }}">
+                 {% else %}
+                 <a href="/complete_task?task={{ task.id }}" 
+                    class="btn {% if task.is_complete %}active{% endif %}">
+                    <i class="icon-ok"></i>
+                </a>
+                <a href="/?edit_task={{ task.id }}" 
+                   class="task-input input-xxlarge uneditable-input 
+                          {% if task.is_complete %}completed-task{% endif %}">
+                          {{ task.task }}
+                 </a>
+                {% endif %}
+                <a href="/delete_task?task={{ task.id }}" class="btn"><i class="icon-remove"></i></a>
             </div>
         </div>
+        {% endfor %}
+        {% endif %}
 
-        <div id="wrap">
-            <div id="main" class="container">
-                <div class="row-fluid">
-                    <div class="page-header">
-                        <h1>Just Two Tasks 
-                            <small>What two things will you accomplish today?</small></h1>
-                    </div>
-                </div>
-
-                <div class="row-fluid">
-                    <form id="task-form" action="/add_tasks" method="POST">{% csrf_token %}
-                        <div id="tasks">
-                            {% if tasks %}
-                            {% for task in tasks %}
-                            <div class="row-fluid">
-                                <div class="task input-prepend input-append">
-                                    {% if task_to_edit == task.id %}
-                                    <a href="/complete_task?task={{ task.id }}" 
-                                        class="btn {% if task.is_complete %}active{% endif %}">
-                                        <i class="icon-ok"></i>
-                                    </a>
-                                    <input name="tasks[]" 
-                                           class="task-input input-xxlarge" 
-                                           type="text" 
-                                           value="{{ task.task }}">
-                                    <input type="hidden" 
-                                           name="task_ids[]" 
-                                           value="{{ task.id }}">
-                                     {% else %}
-                                     <a href="/complete_task?task={{ task.id }}" 
-                                        class="btn {% if task.is_complete %}active{% endif %}">
-                                        <i class="icon-ok"></i>
-                                    </a>
-                                    <a href="/?edit_task={{ task.id }}" 
-                                       class="task-input input-xxlarge uneditable-input 
-                                              {% if task.is_complete %}completed-task{% endif %}">
-                                              {{ task.task }}
-                                     </a>
-                                    {% endif %}
-                                    <a href="/delete_task?task={{ task.id }}" class="btn"><i class="icon-remove"></i></a>
-                                </div>
-                            </div>
-                            {% endfor %}
-                            {% endif %}
-
-                            {% for task in tasks_to_create %}
-                            <div class="task input-prepend input-append">
-                                <a href="/?complete_task={{ task.id }}" class="btn disabled"><i class="icon-ok"></i></a>
-                                <input name="tasks[]" class="task-input input-xxlarge" type="text">
-                                <input type="hidden" name="task_ids[]" value="0">
-                                <a href="/delete_task?task={{ task.id }}" class="btn disabled"><i class="icon-remove"></i></a>
-                            </div>
-                            {% endfor %}
-                            <p>
-                                <br>
-                                <button id="task-form-submit" type="submit" class="btn">Done</button>
-                            </p>
-                        </div> <!-- tasks -->
-                    </form>
-                </div>
-                <script src="http://code.jquery.com/jquery-latest.js"></script>
-                <script src="/static/bootstrap/js/bootstrap.min.js"></script>
-            </div>
+        {% for task in tasks_to_create %}
+        <div class="task input-prepend input-append">
+            <a href="/?complete_task={{ task.id }}" class="btn disabled"><i class="icon-ok"></i></a>
+            <input name="tasks[]" class="task-input input-xxlarge" type="text">
+            <input type="hidden" name="task_ids[]" value="0">
+            <a href="/delete_task?task={{ task.id }}" class="btn disabled"><i class="icon-remove"></i></a>
         </div>
-        <footer class="footer">
-            Site by <a href="http://lextoumbourou.com">Lex Toumbourou</a> in 2012.
-        </footer>
-        <script src="/static/js/jquery-1.8.2.min.js"></script>
-        <script src="/static/js/default.js"></script>
-    </body>
-</html>
+        {% endfor %}
+        <p>
+            <br>
+            <button id="task-form-submit" type="submit" class="btn">Done</button>
+        </p>
+    </div> <!-- tasks -->
+</form>
+{% endblock %}
+    
