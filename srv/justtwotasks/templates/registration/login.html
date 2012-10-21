@@ -1,14 +1,16 @@
 {% extends "parent.html" %}
 
+{% block slogan %}
+Login to accomplish things today.
+{% endblock %}
 {% block content %}
-    <h2>Login</h2>
 
     {% if form.errors %}
-      <p class="error">Sorry, that's not a valid username or password</p>
+      <p class="error">Sorry, that's not a valid email or password</p>
     {% endif %}
 
     <form action="" method="post">{% csrf_token %}
-        <label for="username">User name:</label>
+        <label for="username">Email:</label>
         <input type="text" name="username" value="" id="username"><br />
         <label for="password">Password:</label>
         <input type="password" name="password" value="" id="password"><br />
