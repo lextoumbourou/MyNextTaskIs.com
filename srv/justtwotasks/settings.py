@@ -1,25 +1,28 @@
 import os
 import private
 
-# Django settings for justtwotasks project.
+# Display debug info if this is a dev server
+if os.uname()[1] in private.DEV_SERVERS:
+    DEBUG = True
+else:
+    DEBUG = False
 
-DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
-    ('Lex Toumbourou', 'lextoumbourou@gmail.com'),
+    (private.ADMIN_FULLNAME, private.ADMIN_EMAIL),
 )
 
 MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'ENGINE': private.DB_ENGINE,
         'NAME': private.DB_NAME,                      # Or path to database file if using sqlite3.
         'USER': private.DB_USER,                      # Not used with sqlite3.
         'PASSWORD': private.DB_PASS,                  # Not used with sqlite3.
-        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+        'HOST': private.DB_HOST,                      # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': private.DB_PORT,                      # Set to empty string for default. Not used with sqlite3.
     }
 }
 
@@ -27,7 +30,7 @@ DATABASES = {
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # although not all choices may be available on all operating systems.
 # In a Windows environment this must be set to your system time zone.
-TIME_ZONE = 'Australia/Melbourne'
+TIME_ZONE = private.TIME_ZONE 
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
@@ -98,7 +101,7 @@ MIDDLEWARE_CLASSES = (
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'justtwotasks.urls'
+ROOT_URLCONF = private.ROOT_URLCONF
 
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'justtwotasks.wsgi.application'
@@ -158,10 +161,9 @@ LOGGING = {
     }
 }
 
-# Registration settings
-EMAIL_HOST = 'localhost'
-EMAIL_PORT = 1025
-EMAIL_HOST_USER = ""
-EMAIL_HOST_PASSWORD = ""
-EMAIL_USE_TLS = False
-DEFAULT_FROM_EMAIL = 'testing@example.com'
+EMAIL_HOST = private.EMAIL_HOST
+EMAIL_PORT = private.EMAIL_PORT 
+EMAIL_HOST_USER = private.EMAIL_HOST_USER
+EMAIL_HOST_PASSWORD = private.EMAIL_HOST_PASSWORD
+EMAIL_USE_TLS = private.EMAIL_USE_TLS
+DEFAULT_FROM_EMAIL = private.DEFAULT_FROM_EMAIL 
