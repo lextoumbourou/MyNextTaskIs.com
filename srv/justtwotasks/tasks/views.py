@@ -13,25 +13,24 @@ MAX_TASKS = 2
 @allow_lazy_user
 def main(request):
     """Collects todays tasks and return template to display to user"""
-    # Initialise key variables with sensible defaults
-    today = datetime.today()
-    date = today 
     task_to_edit = None;
 
-    if request.method == 'GET':
-        # Determine what day's tasks to display
-        if 'date' in request.GET:
-            date = datetime.strptime(request.GET['date'], '%Y%m%d')
+    # Determine if we need to edit tasks
+    if 'edit_task' in request.GET:
+        task_to_edit = int(request.GET['edit_task'])
 
-        # Determine if we need to edit tasks
-        if 'edit_task' in request.GET:
-            task_to_edit = int(request.GET['edit_task'])
+    date = get_date(request)
+    slogan = get_slogan(date)
 
     # Get date strings for displaying the backwards and forwards buttons
+    today = datetime.today()
     yesterday = date - timedelta(days=1) 
     tomorrow = date + timedelta(days=1)
 
     user = request.user
+
+    print "Yesterday is "+str(yesterday.date())
+    print "Date is "+str(date.date())
 
     # Get all of today's tasks
     tasks = Task.objects.filter(user=user,
@@ -47,11 +46,13 @@ def main(request):
             'today':today,
             'tomorrow':tomorrow,
             'yesterday':yesterday,
-            'date_to_view':date}
+            'is_today':is_today(date),
+            'slogan':slogan,}
 
     return render_to_response('tasks.html', 
                               args,
                               context_instance=RequestContext(request))
+
 
 @allow_lazy_user
 def add_tasks(request):
@@ -59,6 +60,8 @@ def add_tasks(request):
     provided, will update existing task. Redirects home when finished.
 
     """
+    date = get_date(request)
+
     if request.method == 'POST' and 'tasks[]' in request.POST:
         tasks = request.POST.getlist('tasks[]')
         user = request.user
@@ -81,6 +84,7 @@ def add_tasks(request):
 
     return HttpResponseRedirect("/")
 
+
 @allow_lazy_user
 def delete_task(request):
     """Delete a single task, if it exists then redirect user home"""
@@ -90,6 +94,7 @@ def delete_task(request):
         task.delete()
 
     return HttpResponseRedirect("/")
+
 
 @allow_lazy_user
 def complete_task(request):
@@ -107,3 +112,49 @@ def complete_task(request):
         task.save()
 
     return HttpResponseRedirect("/")
+
+
+def get_date(request):
+    """Return a requested date or today"""
+    # Initialise key variables with sensible defaults
+    today = datetime.today()
+    date = today 
+
+    if request.method == 'GET':
+        # Determine what day's tasks to display
+        if 'date' in request.GET:
+            print "Here I am!"
+            date = datetime.strptime(request.GET['date'], '%Y%m%d')
+
+    return date
+
+
+def get_slogan(date):
+    """Build the slogan based on the date"""
+    today = datetime.today()
+    yesterday = today - timedelta(days=1) 
+    the_day_before = yesterday - timedelta(days=1) 
+
+    slogan = "What two things {0} you accomplish {1}?"
+
+    if date.date() == today.date():
+        slogan = slogan.format("will", "today")
+    elif date.date() == yesterday.date():
+        slogan = slogan.format("did", "yesterday")
+    elif date.date() == the_day_before.date():
+        slogan = slogan.format("did", "the day before")
+    else:
+        slogan = slogan.format("did", "on the "+str(date.date()))
+
+    return slogan
+
+def is_today(date):
+    """Return true if the requested date is today"""
+    is_today = False
+    if date.date() == datetime.today().date():
+        is_today = True
+
+    return is_today 
+
+
+
