@@ -29,9 +29,6 @@ def main(request):
 
     user = request.user
 
-    print "Yesterday is "+str(yesterday.date())
-    print "Date is "+str(date.date())
-
     # Get all of today's tasks
     tasks = Task.objects.filter(user=user,
                                 created__year=date.year,
