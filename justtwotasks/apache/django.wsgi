@@ -1,6 +1,7 @@
-import os,sys
+import os
+import sys
 
-sys.path.append('/srv/')
+sys.path.append("/srv/justtwotasks.com/)
 os.environ['DJANGO_SETTINGS_MODULE'] = 'justtwotasks.settings'
 
 import django.core.handlers.wsgi

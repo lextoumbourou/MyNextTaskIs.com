@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
-from justtwotasks.forms import UserCreationForm
+from tasks.forms import UserCreationForm
 
 admin.autodiscover()
 
