@@ -1,9 +1,9 @@
 import os
 import sys
 
-import private
+app_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
+sys.path.append(app_path)
 
-sys.path.append(private.APP_DIR)
 os.environ['DJANGO_SETTINGS_MODULE'] = 'justtwotasks.settings'
 
 import django.core.handlers.wsgi
