@@ -49,8 +49,7 @@
 
 {% block script %}
 <script type="text/javascript">
-var TODO = {};
-TODO.max_tasks = 2;
+max_tasks = 2;
 
 function Task(data) {
     var self = this;
@@ -86,8 +85,8 @@ function TaskListViewModel() {
 
         // If we have less than the max tasks, 
         // then we need to add padding to the array
-        if (self.tasks().length < TODO.max_tasks) {
-            items_to_add_count = TODO.max_tasks - self.tasks().length;
+        if (self.tasks().length < max_tasks) {
+            items_to_add_count = max_tasks - self.tasks().length;
             for (i = 0; i < items_to_add_count; i++) {
                 data = {
                     pk:0, 
@@ -115,8 +114,6 @@ function TaskListViewModel() {
         });
     };
 };
-
-
 
 var task_list_model = new TaskListViewModel()
 ko.applyBindings(task_list_model);
