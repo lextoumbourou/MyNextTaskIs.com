@@ -1,6 +1,8 @@
 from datetime import datetime, timedelta
+import json
 
 from django.core.context_processors import csrf
+from django.core import serializers
 from django.http import HttpResponseRedirect, HttpResponse
 from django.template import RequestContext
 from django.shortcuts import render_to_response
@@ -13,12 +15,6 @@ MAX_TASKS = 2
 @allow_lazy_user
 def main(request):
     """Collects todays tasks and return template to display to user"""
-    task_to_edit = None;
-
-    # Determine if we need to edit tasks
-    if 'edit_task' in request.GET:
-        task_to_edit = int(request.GET['edit_task'])
-
     date = get_date(request)
     slogan = get_slogan(date)
 
@@ -29,17 +25,7 @@ def main(request):
 
     user = request.user
 
-    # Get all of today's tasks
-    tasks = Task.objects.filter(user=user,
-                                created__year=date.year,
-                                created__month=date.month,
-                                created__day=date.day).order_by('id')
-
-    tasks_to_create = range(1, (MAX_TASKS - len(list(tasks)))+1)
-
-    args = {'tasks':tasks,
-            'task_to_edit':task_to_edit,
-            'tasks_to_create':tasks_to_create,
+    args = {'date':date,
             'today':today,
             'tomorrow':tomorrow,
             'yesterday':yesterday,
@@ -50,65 +36,49 @@ def main(request):
                               args,
                               context_instance=RequestContext(request))
 
-
 @allow_lazy_user
-def add_tasks(request):
-    """Take an array of tasks and add to the database, if a task_id is
-    provided, will update existing task. Redirects home when finished.
-
+def get_tasks(request):
+    """
+    Retrieve the requested day's tasks (default today)
+    and return result as Json
     """
     date = get_date(request)
+    user = request.user
 
-    if request.method == 'POST' and 'tasks[]' in request.POST:
-        tasks = request.POST.getlist('tasks[]')
-        user = request.user
-        if 'task_ids[]' in request.POST:
-            task_ids = request.POST.getlist('task_ids[]')
+    # Get all of today's tasks
+    tasks = Task.objects.filter(user=user,
+                                created=date.date()).order_by('id')[:MAX_TASKS]
 
-        # Ensure we only have no more than the max tasks processed
-        tasks = tasks[:MAX_TASKS]
-
-        for i in enumerate(tasks):
-            key = i[0]
-            # If we've set the key, we're updating an existing task
-            if int(task_ids[key]):
-                task = Task.objects.get(user=user, pk=int(task_ids[key]))
-                task.task = tasks[key]
-                task.save()
-            # Otherwise, it's brand new
-            else:
-                Task.objects.create(user=user, task=tasks[key], is_complete=False)
-
-    return HttpResponseRedirect("/")
+    data = serializers.serialize('json', tasks)
+    return HttpResponse(data)
 
 
 @allow_lazy_user
-def delete_task(request):
-    """Delete a single task, if it exists then redirect user home"""
-    if request.method == 'GET' and 'task' in request.GET:
-        user = request.user
-        task = Task.objects.get(user=user, pk=int(request.GET['task']))
-        task.delete()
-
-    return HttpResponseRedirect("/")
-
-
-@allow_lazy_user
-def complete_task(request):
-    """Set a task to the opposite completion status to what it current is
-    eg if it's False, make it True. Then, redirect home
-
+def update_tasks(request):
     """
-    if request.method == 'GET' and 'task' in request.GET:
-        user = request.user
-        task = Task.objects.get(user=user, pk=int(request.GET['task']))
-        if task.is_complete:
-            task.is_complete = False
-        else:
-            task.is_complete = True
-        task.save()
+    Get or create the tasks for a day then return 
+    the current tasks as Json
+    """
+    date = get_date(request)
+    user = request.user
+    if request.method == 'POST':
+        json_data = json.loads(request.raw_post_data)
+        if 'tasks' in json_data:
+            for t in json_data['tasks']:
+                # If we've set the key, we're updating an existing task
+                if int(t['pk']) > 0:
+                    task = Task.objects.get(user=user, pk=t['pk'])
+                    task.task = t['task']
+                    task.is_complete = t['is_complete']
+                    task.save()
+                # Otherwise, it's brand new
+                else:
+                    Task.objects.create(user=user, 
+                                        task=t['task'], 
+                                        created=date,
+                                        is_complete=False)
 
-    return HttpResponseRedirect("/")
+    return get_tasks(request)
 
 
 def get_date(request):
@@ -116,12 +86,9 @@ def get_date(request):
     # Initialise key variables with sensible defaults
     today = datetime.today()
     date = today 
-
-    if request.method == 'GET':
-        # Determine what day's tasks to display
-        if 'date' in request.GET:
-            print "Here I am!"
-            date = datetime.strptime(request.GET['date'], '%Y%m%d')
+    # Determine what day's tasks to display
+    if 'date' in request.GET:
+        date = datetime.strptime(request.GET['date'], '%Y%m%d')
 
     return date
 
@@ -145,6 +112,7 @@ def get_slogan(date):
 
     return slogan
 
+
 def is_today(date):
     """Return true if the requested date is today"""
     is_today = False
@@ -152,6 +120,4 @@ def is_today(date):
         is_today = True
 
     return is_today 
-
-
 
