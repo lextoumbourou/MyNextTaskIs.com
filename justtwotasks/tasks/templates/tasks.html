@@ -14,8 +14,8 @@
                                           complete_task(),
                                           $parent.save()
                                       },
-                              css: { active: is_complete(),
-                                     disabled: !task() }" />
+                               css: {'active': is_complete(),
+                                     'disabled': !task() }" />
                     <i class="icon-ok"></i>
                 </a>
 
@@ -23,8 +23,8 @@
                        value="" 
                        data-bind="value: task, 
                                   css: {'completed-task': is_complete()}, 
-                                        disable: is_complete,
-                                  event: { change: $parent.save }" />
+                                  disable: is_complete,
+                                  event: {change: $parent.save}" />
 
                 <input type="hidden" data-bind="value: pk" />
 
@@ -33,7 +33,7 @@
                                           remove_task(),
                                           $parent.save()
                                        },
-                               css: { disabled: !task() }">
+                               css: {'disabled': !task()}">
                     <i class="icon-remove"></i>
                 </a>
             </div>
