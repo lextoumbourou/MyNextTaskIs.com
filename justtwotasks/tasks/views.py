@@ -9,6 +9,7 @@ from django.shortcuts import render_to_response
 from lazysignup.decorators import allow_lazy_user
 
 from justtwotasks.tasks.models import Task
+import justtwotasks.settings as settings
 
 MAX_TASKS = 2
 
@@ -30,7 +31,8 @@ def main(request):
             'tomorrow':tomorrow,
             'yesterday':yesterday,
             'is_today':is_today(date),
-            'slogan':slogan,}
+            'slogan':slogan,
+            'debug':settings.TEMPLATE_DEBUG}
 
     return render_to_response('tasks.html', 
                               args,

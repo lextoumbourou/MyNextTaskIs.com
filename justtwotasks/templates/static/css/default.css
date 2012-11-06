@@ -24,14 +24,14 @@ brand {
 }
 #main {
     overflow:auto;
-    padding-bottom:135px; /* this needs to be bigger than footer height*/
+    padding-bottom:120px; /* this needs to be bigger than footer height*/
     padding-left:20px;
 }
 
 .footer {
     position: relative;
-    margin-top: -80px; /* negative value of footer height */
-    height: 80px;
+    margin-top: -100px; /* negative value of footer height */
+    height: 100px;
     clear:both;
     padding-top:20px;
     text-align:center;
