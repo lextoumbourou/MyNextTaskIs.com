@@ -1,10 +1,17 @@
+import os
+
 from fabric.api import run, env, settings, cd, put, sudo
+from fabric.contrib import files
 
 import private
 
 
 def prod():
     env.hosts = list(private.PROD_SERVERS)
+
+
+def local():
+    env.hosts = ['localhost']
 
 
 def deploy():
@@ -23,3 +30,29 @@ def deploy():
         run('python ../manage.py syncdb')
         run('python ../manage.py collectstatic  --noinput')
         run('touch apache/django.wsgi')
+
+def compile():
+    """Compile less code and install JS components"""
+    pass
+
+
+def update_bootstrap(tag=None):
+    """
+    Updates Bootstrap files to tag version. If a tag isn't specified,
+    just get latest version.
+    """
+    repo = 'https://github.com/twitter/bootstrap'
+    with settings(warn_only=True):
+        # Delete Bootstrap from the tmp location
+        if not files.exists('~/src'):
+            print "File doesn't exist"
+            run('mkdir ~/src')
+        if not files.exists('~/src/bootstrap'):
+            run('cd ~/src/; git clone {0}'.format(repo))
+
+        with cd('~/src/bootstrap/'):
+            run('git pull origin master') 
+            if tag:
+                run('git checkout {0}'.format(tag))
+            local_path = os.path.join(os.path.dirname(__file__), 'templates/static/less/bootstrap')
+            run('cp -fR less {0}'.format(local_path))
