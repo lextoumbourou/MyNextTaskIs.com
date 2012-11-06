@@ -124,6 +124,7 @@ INSTALLED_APPS = (
     'django.contrib.admindocs',
     'lazysignup',
     'registration',
+    'compress',
     'justtwotasks.tasks',
 )
 
@@ -167,3 +168,9 @@ EMAIL_HOST_USER = private.EMAIL_HOST_USER
 EMAIL_HOST_PASSWORD = private.EMAIL_HOST_PASSWORD
 EMAIL_USE_TLS = private.EMAIL_USE_TLS
 DEFAULT_FROM_EMAIL = private.DEFAULT_FROM_EMAIL 
+
+COMPRESS_PRECOMPILERS = (
+    ('text/less', 'lessc {infile} {outfile}'),
+)
+
+INTERNAL_IPS = ('127.0.0.1',)
