@@ -29,6 +29,7 @@ def deploy():
         put('private.py', 'private.py')
         run('python ../manage.py syncdb')
         run('python ../manage.py collectstatic  --noinput')
+        run('python ../manage.py compress --force')
         run('touch apache/django.wsgi')
 
 def compile():
