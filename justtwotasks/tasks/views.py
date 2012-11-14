@@ -90,7 +90,10 @@ def get_date(request):
     date = today 
     # Determine what day's tasks to display
     if 'date' in request.GET:
-        date = datetime.strptime(request.GET['date'], '%Y%m%d')
+        try:
+            date = datetime.strptime(request.GET['date'], '%Y%m%d')
+        except ValueError:
+            pass
 
     return date
 
