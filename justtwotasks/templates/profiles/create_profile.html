@@ -1,0 +1,11 @@
+{% extends 'parent.html' %}
+
+{% block content %}
+<h2>Create profile for {{ user }}</h2>
+<form action="" method="POST">
+    {{ form.as_p }}
+    {% csrf_token %}
+    <input id="submit" type="submit" name="submit" value="Update" />
+</form>
+{% endblock %}
+

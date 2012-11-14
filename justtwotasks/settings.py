@@ -126,7 +126,9 @@ INSTALLED_APPS = (
     'lazysignup',
     'registration',
     'compressor',
+    'profiles',
     'justtwotasks.tasks',
+    'justtwotasks.accounts',
 )
 
 AUTHENTICATION_BACKENDS = (
@@ -175,3 +177,6 @@ COMPRESS_PRECOMPILERS = (
 )
 
 INTERNAL_IPS = ('127.0.0.1',)
+
+AUTH_PROFILE_MODULE = 'accounts.UserProfile'
+APPEND_SLASH = True

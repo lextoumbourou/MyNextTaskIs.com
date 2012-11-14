@@ -1,0 +1,15 @@
+{% extends 'parent.html' %}
+
+{% block content %}
+<h2>Settings for {{ user }}</h1>
+<form action="" method="POST">
+    <p>
+        {{ form.as_p }}
+        {% csrf_token %}
+    </p>
+    <input class="btn" id="submit" type="submit" name="submit" value="Update" />
+    <a class="btn" href="/">Cancel</a>
+</form>
+{% endblock content %}
+
+
