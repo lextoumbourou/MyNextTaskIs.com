@@ -1,7 +1,11 @@
 {% extends 'parent.html' %}
 
 {% block content %}
-<h1>Profile for {{ user }}</h1>
-{{ profile.time_zone }}
+<h2>Profile for {{ user }}</h2>
+    <p>First Name: {{ user.first_name }}</p>
+    <p>Last Name: {{ user.last_name }}</p>
+    <p>Email: {{ user.email }}</p>
+    <p>Timezone: {{ profile.timezone }}</p>
+    <p>Day Ends : {{ profile.day_ends }}</p>
 {% endblock content %}
 
