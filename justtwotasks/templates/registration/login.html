@@ -11,9 +11,9 @@ Login to accomplish things today.
 
     <form action="" method="post">{% csrf_token %}
         <label for="username">Email:</label>
-        <input type="text" name="username" value="" id="username"><br />
+        {{ form.email }}<br />
         <label for="password">Password:</label>
-        <input type="password" name="password" value="" id="password"><br />
+        {{ form.password }}<br />
 
         <input class="btn" type="submit" value="Login" />
         <input type="hidden" name="next" value="/watch" />

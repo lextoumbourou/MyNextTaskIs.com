@@ -4,7 +4,7 @@
 {% endblock %}
 
 {% block slogan %}
-Settings
+Settings for <strong>{{ user.username }}</strong>
 {% endblock %}
 
 {% block content %}
@@ -34,19 +34,7 @@ Settings
             
        </div>
     </div>
-    <div class="control-group">
-        <label class="control-label" for="id_email">Email</label>
-        <div class="controls">
-            {{ form.email }}
-            {% if form.email.errors %}
-            <span class="help-inline">
-                {% for error in form.email.errors %}
-                    {{ error }}
-                {% endfor %}
-            </span>
-            {% endif %} 
-       </div>
-   </div>
+    
    <hr>
     <div class="control-group">
         <label class="control-label" for="id_timezone">Timezone</label>
