@@ -2,6 +2,9 @@ from django import forms
 from django.db import models
 from django.forms import ModelForm
 from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm as BaseUserCreationForm
+from django.utils.translation import ugettext_lazy as _
+from django.contrib.auth.models import User
 
 from justtwotasks.accounts.models import UserProfile
 
@@ -29,3 +32,22 @@ class ProfileForm(ModelForm):
         u.save()
         profile = super(ModelForm, self).save(*args, **kwargs)
         return profile
+
+class UserCreationForm(BaseUserCreationForm):
+    """
+    Class passed into lazysignup view to override default and allow
+    for email address username
+    """
+    email = forms.EmailField(label=_('Email'),
+                             help_text = _('Required. A valid email address.'),
+                             error_messages = {
+                                 'invalid': _("That doesn't appear to be a valid email address.")})
+
+    class Meta:
+        model = User
+        fields = ('username', 'password1', 'password2', 'email',)
+
+    def get_credentials(self):
+        return {
+            "username": self.cleaned_data["username"],
+            "password": self.cleaned_data["password1"]}

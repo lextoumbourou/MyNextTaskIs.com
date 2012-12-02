@@ -123,7 +123,6 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.admin',
     'django.contrib.admindocs',
-    'emailusernames',
     'lazysignup',
     'registration',
     'compressor',
@@ -135,7 +134,6 @@ INSTALLED_APPS = (
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
-    'emailusernames.backends.EmailAuthBackend',
     'lazysignup.backends.LazySignupBackend',
 )
 
