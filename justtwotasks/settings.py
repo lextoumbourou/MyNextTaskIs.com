@@ -133,6 +133,7 @@ INSTALLED_APPS = (
 )
 
 AUTHENTICATION_BACKENDS = (
+    'justtwotasks.accounts.backends.EmailOrUsernameModelBackend',
     'django.contrib.auth.backends.ModelBackend',
     'lazysignup.backends.LazySignupBackend',
 )

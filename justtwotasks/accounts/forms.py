@@ -51,3 +51,10 @@ class UserCreationForm(BaseUserCreationForm):
         return {
             "username": self.cleaned_data["username"],
             "password": self.cleaned_data["password1"]}
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        username = self.cleaned_data.get('username')
+        if email and User.objects.filter(email=email).exclude(username=username).count():
+            raise forms.ValidationError(u'A user has already registered with this email address.')
+        return email
