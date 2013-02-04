@@ -1,8 +1,10 @@
 import os
 import private
 
+is_dev = os.uname()[1] in private.DEV_SERVERS
+
 # Display debug info if this is a dev server
-if os.uname()[1] in private.DEV_SERVERS:
+if is_dev:
     DEBUG = True
 else:
     DEBUG = False
@@ -21,10 +23,20 @@ DATABASES = {
         'NAME': private.DB_NAME,                      # Or path to database file if using sqlite3.
         'USER': private.DB_USER,                      # Not used with sqlite3.
         'PASSWORD': private.DB_PASS,                  # Not used with sqlite3.
-        'HOST': private.DB_HOST,                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': private.DB_PORT,                      # Set to empty string for default. Not used with sqlite3.
     }
 }
+
+# Set the database host to either prod or dev address
+DATABASES['default']['HOST'] = (
+    private.DEV_DB_HOST if is_dev else private.PROD_DB_HOST
+)
+
+
+# Set the database host to either prod or dev address
+DATABASES['default']['HOST'] = (
+    private.DEV_DB_HOST if is_dev else private.PROD_DB_HOST
+)
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
