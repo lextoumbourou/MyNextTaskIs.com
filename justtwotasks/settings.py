@@ -123,6 +123,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.admin',
     'django.contrib.admindocs',
+    'bootup',
     'lazysignup',
     'registration',
     'compressor',
@@ -182,3 +183,8 @@ INTERNAL_IPS = ('127.0.0.1',)
 
 AUTH_PROFILE_MODULE = 'accounts.UserProfile'
 APPEND_SLASH = True
+
+# Django Bootup configuration settings
+BOOTUP_SUPERUSER_NAME = private.SUPERUSER_NAME
+BOOTUP_SUPERUSER_PASSWORD = private.SUPERUSER_PASSWORD
+BOOTUP_SUPERUSER_EMAIL = private.SUPERUSER_EMAIL
