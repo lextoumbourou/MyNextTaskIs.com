@@ -25,7 +25,7 @@ def deploy():
     sudo("chown -R {0} {1}".format(private.USER_GROUP, private.APP_DIR))
     # Django app deployment tasks 
     with cd(private.APP_DIR):
-        run('git pull')
+        run('git pull --force')
         put('private.py', 'private.py')
         run('python ../manage.py syncdb')
         run('python ../manage.py collectstatic  --noinput')
