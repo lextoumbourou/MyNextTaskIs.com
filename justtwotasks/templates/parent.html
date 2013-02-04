@@ -1,3 +1,4 @@
+{% load analytics %}
 {% load i18n lazysignup_tags %}
 {% load compress %}
 <!DOCTYPE html>
@@ -97,5 +98,7 @@
         <script src="/static/js/default.js"></script>
         {% block script %}
         {% endblock %}
+
+        {% analytics "UA-38212244-1" %}
     </body>
 </html>

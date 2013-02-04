@@ -124,6 +124,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.admindocs',
     'bootup',
+    'google_analytics',
     'lazysignup',
     'registration',
     'compressor',
