@@ -136,9 +136,8 @@ INSTALLED_APPS = (
     'registration',
     'compressor',
     'profiles',
-    'south',
-    'justtwotasks.tasks',
     'justtwotasks.accounts',
+    'justtwotasks.tasks',
 )
 
 AUTHENTICATION_BACKENDS = (
@@ -189,7 +188,7 @@ COMPRESS_PRECOMPILERS = (
 
 INTERNAL_IPS = ('127.0.0.1',)
 
-AUTH_PROFILE_MODULE = 'accounts.UserProfile'
+AUTH_PROFILE_MODULE = 'justtwotasks.accounts.UserProfile'
 APPEND_SLASH = True
 
 # Django Bootup configuration settings
