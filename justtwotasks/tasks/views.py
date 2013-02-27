@@ -11,11 +11,10 @@ from lazysignup.decorators import allow_lazy_user
 from justtwotasks.tasks.models import Task
 import justtwotasks.settings as settings
 
-MAX_TASKS = 2
 
 @allow_lazy_user
 def main(request):
-    """Collects todays tasks and return template to display to user"""
+    """Collect todays tasks and return template to display to user"""
     date = get_date(request)
     slogan = get_slogan(date)
 
@@ -46,17 +45,22 @@ def get_tasks(request):
     """
     date = get_date(request)
     user = request.user
+    if ('completed' in request.GET) and (request.GET['completed'] != '0'):
+        completed = True
+    else:
+        completed = False
 
     # Get all of today's tasks
     tasks = Task.objects.filter(user=user,
-                                created=date.date()).order_by('id')[:MAX_TASKS]
+                                is_complete=completed,
+                                created=date.date()).order_by('id')
 
     data = serializers.serialize('json', tasks)
     return HttpResponse(data)
 
 
 @allow_lazy_user
-def update_tasks(request):
+def update_task(request):
     """
     Get or create the tasks for a day then return 
     the current tasks as Json
@@ -65,20 +69,18 @@ def update_tasks(request):
     user = request.user
     if request.method == 'POST':
         json_data = json.loads(request.raw_post_data)
-        if 'tasks' in json_data:
-            for t in json_data['tasks']:
-                # If we've set the key, we're updating an existing task
-                if int(t['pk']) > 0:
-                    task = Task.objects.get(user=user, pk=t['pk'])
-                    task.task = t['task']
-                    task.is_complete = t['is_complete']
-                    task.save()
-                # Otherwise, it's brand new
-                else:
-                    Task.objects.create(user=user, 
-                                        task=t['task'], 
-                                        created=date,
-                                        is_complete=False)
+        if 'task' in json_data:
+            if 'pk' in json_data and int(json_data['pk']) > 0:
+                task = Task.objects.get(user=user, pk=t['pk'])
+                task.task = json_data['task']
+                task.is_complete = json_data['is_complete']
+                task.save()
+            # Otherwise, it's brand new
+            else:
+                Task.objects.create(user=user, 
+                                    task=json_data['task'], 
+                                    created=date,
+                                    is_complete=False)
 
     return get_tasks(request)
 
@@ -104,16 +106,16 @@ def get_slogan(date):
     yesterday = today - timedelta(days=1) 
     the_day_before = yesterday - timedelta(days=1) 
 
-    slogan = "What two things {0} you accomplish {1}?"
+    slogan = "{0} completed tasks"
 
     if date.date() == today.date():
-        slogan = slogan.format("will", "today")
+        slogan = slogan.format("Today's")
     elif date.date() == yesterday.date():
-        slogan = slogan.format("did", "yesterday")
+        slogan = slogan.format("Yesterday's")
     elif date.date() == the_day_before.date():
-        slogan = slogan.format("did", "the day before")
+        slogan = slogan.format("The day before's")
     else:
-        slogan = slogan.format("did", "on the "+str(date.date()))
+        slogan = slogan.format("The "+str(date.date())+"'s")
 
     return slogan
 
@@ -125,4 +127,3 @@ def is_today(date):
         is_today = True
 
     return is_today 
-
