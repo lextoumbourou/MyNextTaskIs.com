@@ -21,22 +21,17 @@ DATABASES = {
     'default': {
         'ENGINE': private.DB_ENGINE,
         'NAME': private.DB_NAME,                      # Or path to database file if using sqlite3.
-        'USER': private.DB_USER,                      # Not used with sqlite3.
-        'PASSWORD': private.DB_PASS,                  # Not used with sqlite3.
-        'PORT': private.DB_PORT,                      # Set to empty string for default. Not used with sqlite3.
     }
 }
-
-# Set the database host to either prod or dev address
-DATABASES['default']['HOST'] = (
-    private.DEV_DB_HOST if is_dev else private.PROD_DB_HOST
-)
-
-
-# Set the database host to either prod or dev address
-DATABASES['default']['HOST'] = (
-    private.DEV_DB_HOST if is_dev else private.PROD_DB_HOST
-)
+if is_dev:
+    DATABASES['default']['HOST'] = private.DEV_DB_HOST
+    DATABASES['default']['USER'] = private.DEV_DB_USER
+    DATABASES['default']['PASSWORD'] = private.DEV_DB_PASS
+else:
+    DATABASES['default']['HOST'] = private.PROD_DB_HOST
+    DATABASES['default']['USER'] = private.PROD_DB_USER
+    DATABASES['default']['PASSWORD'] = private.PROD_DB_PASS
+    
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
