@@ -4,13 +4,25 @@ when you run "manage.py test".
 
 Replace this with more appropriate tests for your application.
 """
-
+from datetime import datetime
 from django.test import TestCase
+from django.test.client import Client
+from django.contrib.auth.models import User
+from justtwotasks.tasks.models import Task
 
 
-class SimpleTest(TestCase):
-    def test_basic_addition(self):
+class TasksTest(TestCase):
+    def test_delete_task(self):
         """
-        Tests that 1 + 1 always equals 2.
+        Test that a task deletes successfully after creating it
         """
-        self.assertEqual(1 + 1, 2)
+        # Add a task to be deleted
+        user = User.objects.create_user('test1', 'test@test.com', 'nopass')
+        user.save()
+        t = Task.objects.create(
+            user=user, task="Test task", created=datetime.today(), is_complete=False)
+        c = Client()
+        response = c.delete('/task/{0}'.format(t.pk))
+        key = t.pk
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Task.objects.get(pk=key), None)
