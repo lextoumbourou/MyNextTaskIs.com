@@ -1,46 +1,54 @@
 {% extends "parent.html" %}
 
 {% block content %}
+
 <div class="row-fluid">
-<form id="task-form" action="/update_task" method="POST">
     {% csrf_token %}
     <input type="hidden" id="page_date" name="date" value="{{ date.date|date:'Ymd' }}" />
     <div id="task">
         <!-- ko with: incomplete_task -->
         <div class="row-fluid">
-            <div class="task input-prepend input-append">
-                <a href="#" class="btn disabled" data-bind="click: function(task) {
-                                                              if (pk()) {
-                                                                  complete_task(),
-                                                                  $parent.save(task);
-                                                                  $parent.update_completed(task);
-                                                              }
-                                                             },
-                                                            css: {'disabled': !task()}"/>
-                    <i class="icon-ok"></i>
-                </a>
+            <form id="task-form">
+                <div class="task input-prepend input-append">
+                    <a href="#" class="btn disabled" data-bind="click: function(task) {
+                                                                  if (pk()) {
+                                                                      complete_task(),
+                                                                      $parent.save(task);
+                                                                      $parent.update_completed(task);
+                                                                  }
+                                                                 },
+                                                                css: {'disabled': !task()}"/>
+                        <i class="icon-ok"></i>
+                    </a>
 
-                <input name="task" class="task-input input-xxlarge" type="text" 
-                       value=""  data-bind="value: task, 
-                                            valueUpdate: 'afterkeydown',
-                                            event: { focus: function(task) { 
-                                                                if (!pk()) { 
-                                                                    $parent.save(task); 
-                                                                };
-                                                             },
-                                                     change: $parent.save, }" />
+                    <input name="task" class="task-input input-xxlarge" type="text" 
+                           value=""  data-bind="value: task, 
+                                                valueUpdate: 'afterkeydown',
+                                                event: { focus: function(task) { 
+                                                                    if (!pk()) { 
+                                                                        $parent.save(task); 
+                                                                    };
+                                                                 },
+                                                         change: $parent.save, }" />
 
-                <input type="hidden" data-bind="value: pk" />
-                <a href="#" class="btn disabled" data-bind="css: {'disabled': !task()}"><i class="icon-time"></i></aa>
-                <a href="#" class="btn disabled" data-bind="click: function(task) { 
-                                                                       if (pk() != 0) {
-                                                                               $parent.delete_task(task);
-                                                                       };
-                                                                   },
-                                                            css: {'disabled': !task()}">
-                    <i class="icon-remove"></i>
-                </a>
-            </div>
+                    <input type="hidden" data-bind="value: pk" />
+                    <a href="#" class="btn disabled" data-bind="css: {'disabled': !task()},
+                                                                click: start_timer">
+                        <i class="icon-time"></i>
+                    </a>
+                    <a href="#" class="btn disabled" data-bind="click: function(task) { 
+                                                                           if (pk() != 0) {
+                                                                                   $parent.delete_task(task);
+                                                                           };
+                                                                       },
+                                                                css: {'disabled': !task()}">
+                        <i class="icon-remove"></i>
+                    </a>
+                </div>
+                <div class="timer">
+                    <span class="help-block" data-bind="text: timer"></span>
+                </div>
+            </form>
         </div>
         <!-- /ko -->
 
@@ -61,7 +69,6 @@
         </div>
     </div>
 </div>
-</form>
 {% endblock %}
 
 {% block script %}

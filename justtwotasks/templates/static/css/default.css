@@ -11,10 +11,6 @@ brand {
     text-align:left;
 }
 
-.task {
-    margin-bottom: 30px;
-}
-
 .completed-task {
     text-decoration: line-through;
 }
@@ -26,6 +22,9 @@ brand {
     overflow:auto;
     padding-bottom:120px; /* this needs to be bigger than footer height*/
     padding-left:20px;
+}
+
+.timer {
 }
 
 .footer {
