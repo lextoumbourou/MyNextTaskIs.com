@@ -18,26 +18,39 @@ def request_dispatcher(request, task=None):
     """
     if (request.method == 'GET') and (task is None):
         return get_tasks(request)
-    if (request.method == 'POST') and (task is not None):
+    elif (request.method == 'POST') and (task is not None):
         return update_task(request, task)
+    elif (request.method == 'POST') and (task is None):
+        return create_task(request)
     elif (request.method == 'DELETE') and (task is not None):
         return delete_task(request, task)
 
 
 @allow_lazy_user
+def create_task(request):
+    """Create a new task and return json data for the task"""
+    json_data = json.loads(request.raw_post_data)
+    if 'task' in json_data:
+        task = Task.objects.create(
+            user=request.user, task=json_data['task'],
+            is_complete=False, created=datetime.today())
+
+    data = serializers.serialize('json', [task])
+    return HttpResponse(data)
+
+
+@allow_lazy_user
 def delete_task(request, task):
-    """
-    Delete a task if it exists
-    """
+    """Delete a task if it exists"""
     try:
         task = Task.objects.get(pk=task)
     except Task.DoesNotExist:
         return Http404
-    if task.user != request.user:
-        return HttpResponse(status=401)
-    else:
+    if task.user == request.user:
         task.delete()
         return HttpResponse(status=200)
+    else:
+        return HttpResponse(status=401)
 
 
 @allow_lazy_user

@@ -35,11 +35,11 @@ class TasksTest(TestCase):
             created=datetime.today(), is_complete=False)
 
         # Test that delete fails for wrong user
-        client = Client()
-        response = client.delete('/task/{0}'.format(t.pk))
+        local_client = Client()
+        response = local_client.delete('/api/task/{0}'.format(t.pk))
         self.assertEqual(response.status_code, 401)
 
-        response = self.client.delete('/task/{0}'.format(t.pk))
+        response = self.client.delete('/api/task/{0}'.format(t.pk))
         self.assertEqual(response.status_code, 200)
         self.assertFalse(Task.objects.filter(pk=t.pk))
 
@@ -49,7 +49,7 @@ class TasksTest(TestCase):
         t = Task.objects.create(
                 user=self.user, task='Test task', 
                 created=datetime.today(), is_complete=False)
-        response = self.client.get('/task/')
+        response = self.client.get('/api/task/')
         tasks = Task.objects.filter(
             user=self.user, 
             created=datetime.today()).order_by('is_complete', 'id')
@@ -67,12 +67,22 @@ class TasksTest(TestCase):
         # Test that delete fails for wrong user
         local_client = Client()
         response = local_client.post(
-            '/task/{0}'.format(t.pk), data=data, 
+            '/api/task/{0}'.format(t.pk), data=data, 
             content_type='application/json')
         self.assertEqual(response.status_code, 401)
 
         response = self.client.post(
-            '/task/{0}'.format(t.pk), data=data, 
+            '/api/task/{0}'.format(t.pk), data=data, 
             content_type='application/json')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(Task.objects.get(pk=t.pk).is_complete, True) 
+
+
+    def test_create_new_task(self):
+        """Test that new task is created successfully"""
+        task_name = 'Another test task'
+        data = json.dumps({'task': task_name, 'is_complete': False})
+        response = self.client.post(
+            '/api/task/', data=data, content_type='application/json')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(json.loads(response.content)[0]['fields']['task'], task_name)
