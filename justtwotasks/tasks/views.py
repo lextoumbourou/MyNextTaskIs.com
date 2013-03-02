@@ -12,17 +12,20 @@ from justtwotasks.tasks.models import Task
 import justtwotasks.settings as settings
 
 
-@allow_lazy_user
 def request_dispatcher(request, task=None):
     """
     Route to the correct view depending on HTTP method
     """
-    if (request.method == 'DELETE') and (task is not None):
+    if (request.method == 'GET') and (task is None):
+        return get_tasks(request)
+    if (request.method == 'POST') and (task is not None):
+        return update_task(request, task)
+    elif (request.method == 'DELETE') and (task is not None):
         return delete_task(request, task)
 
 
 @allow_lazy_user
-def delete_task(result, task):
+def delete_task(request, task):
     """
     Delete a task if it exists
     """
@@ -30,8 +33,11 @@ def delete_task(result, task):
         task = Task.objects.get(pk=task)
     except Task.DoesNotExist:
         return Http404
-    task.delete()
-    return HttpResponse(status=200)
+    if task.user != request.user:
+        return HttpResponse(status=401)
+    else:
+        task.delete()
+        return HttpResponse(status=200)
 
 
 @allow_lazy_user
@@ -59,10 +65,10 @@ def main(request):
                               args,
                               context_instance=RequestContext(request))
 
+
 @allow_lazy_user
 def get_tasks(request):
-    """
-    Retrieve the requested day's tasks (default today)
+    """Retrieve the requested day's tasks (default today)
     and return result as Json
     """
     date = get_date(request)
@@ -78,26 +84,24 @@ def get_tasks(request):
 
 
 @allow_lazy_user
-def update_task(request):
-    """
-    Get or create the tasks for a day then return 
+def update_task(request, task):
+    """Get or create the tasks for a day then return 
     the current tasks as Json
     """
     date = get_date(request)
     user = request.user
-    if request.method == 'POST':
-        json_data = json.loads(request.raw_post_data)
-        if 'task' in json_data:
-            if 'pk' in json_data and int(json_data['pk']) != 0:
-                task = Task.objects.get(user=user, pk=json_data['pk'])
-                task.task = json_data['task']
-                task.is_complete = json_data['is_complete']
-                task.save()
-            # Otherwise, it's brand new
-            else:
-                Task.objects.create(
-                    user=user, task=json_data['task'], 
-                    created=date, is_complete=False)
+    task = Task.objects.get(pk=task)
+
+    if task.user != user:
+        return HttpResponse(status=401) 
+
+    json_data = json.loads(request.raw_post_data)
+    if 'task' in json_data:
+        task.task = json_data['task']
+    if 'is_complete' in json_data:
+        task.is_complete = json_data['is_complete']
+
+    task.save()
 
     return get_tasks(request)
 
