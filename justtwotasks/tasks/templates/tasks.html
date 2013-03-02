@@ -2,153 +2,82 @@
 
 {% block content %}
 <div class="row-fluid">
-<form id="task-form" action="/update_tasks" method="POST">
+<form id="task-form" action="/update_task" method="POST">
     {% csrf_token %}
     <input type="hidden" id="page_date" name="date" value="{{ date.date|date:'Ymd' }}" />
-    <div id="tasks">
-        <!-- ko foreach: tasks -->
+    <div id="task">
+        <!-- ko foreach: incomplete_task -->
         <div class="row-fluid">
             <div class="task input-prepend input-append">
-                <a href="#" class="btn disabled" 
-                    data-bind="click: function() {
-                                          complete_task(),
-                                          $parent.save()
-                                      },
-                               css: {'active': is_complete(),
-                                     'disabled': !task() }" />
+                <a href="#" class="btn" data-bind="click: function() {
+                                                              complete_task(),
+                                                              $parent.save();
+                                                          },"/>
                     <i class="icon-ok"></i>
                 </a>
 
-                <input name="tasks[]" class="task-input input-xxlarge" type="text" 
-                       value="" 
-                       data-bind="value: task, 
-                                  css: {'completed-task': is_complete()}, 
-                                  disable: is_complete,
-                                  event: {change: $parent.save}" />
+                <input name="task" class="task-input input-xxlarge" type="text" 
+                       value=""  data-bind="value: task, 
+                                            event: {change: $parent.save}" />
 
                 <input type="hidden" data-bind="value: pk" />
 
-                <a href="#" class="btn disabled" 
+                <a href="#" class="btn" 
                     data-bind="click: function() {
-                                          remove_task(),
-                                          $parent.save()
-                                       },
-                               css: {'disabled': !task()}">
+                                          delete_task(),
+                                          $parent.clear_task();
+                                       },">
                     <i class="icon-remove"></i>
                 </a>
             </div>
         </div>
         <!-- /ko -->
+
+        <div class="row-fluid">
+            <h2><small>{% block slogan %}{{ slogan }}{% endblock %}</small></h2>
+        </div>
+
+        <ul data-bind="foreach: completed_tasks">
+            <li data-bind="text: task"></li>
+        </ul>
     </div>
-    <input type="hidden" name="tasks" 
-           data-bind="value: ko.toJSON(tasks)" />
-</div> <!-- tasks -->
-</form>
 </div>
+</form>
 {% endblock %}
 
 {% block script %}
-<script type="text/javascript">
-max_tasks = 2;
+<script src="{{ STATIC_URL }}js/tasks.js"></script>
+<script>
+    var csrftoken = $("input[name='csrfmiddlewaretoken']").val();
 
-function Task(data) {
-    var self = this;
-    this.pk = ko.observable(data.pk);
-    this.task = ko.observable(data.fields.task);
-    this.is_complete = ko.observable(data.fields.is_complete);
-    this.remove_task = function() {
-        this.is_complete(false);
-        this.task("");
-    };
-    this.complete_task = function() {
-        if (!this.is_complete()) {
-            this.is_complete(true);
-        }
-        else {
-            this.is_complete(false);
-        }
-    };
-}
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
 
-function TaskListViewModel() {
-    var self = this;
-    self.tasks = ko.observableArray([]);
-    self.date = $("#page_date").val();
+    function sameOrigin(url) {
+        // test that a given url is a same-origin URL
+        // url could be relative or scheme relative or absolute
+        var host = document.location.host; // host + port
+        var protocol = document.location.protocol;
+        var sr_origin = '//' + host;
+        var origin = protocol + sr_origin;
+        // Allow absolute or scheme relative URLs to same origin
+        return (url == origin || url.slice(0, origin.length + 1) == origin + '/') ||
+            (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
+            // or any other URL that isn't scheme relative or absolute i.e relative.
+            !(/^(\/\/|http:|https:).*/.test(url));
+    }
 
-    $.getJSON("/get_tasks?date="+self.date, function(allData) {
-        if (!$.isEmptyObject(allData)) {
-            var mapped_tasks = $.map(allData, function(item) {
-                return new Task(item)
-            });
-            self.tasks(mapped_tasks);
-        }
-
-        // If we have less than the max tasks, 
-        // then we need to add padding to the array
-        if (self.tasks().length < max_tasks) {
-            items_to_add_count = max_tasks - self.tasks().length;
-            for (i = 0; i < items_to_add_count; i++) {
-                data = {
-                    pk:0, 
-                    fields: {
-                        task:"", 
-                        is_complete:false
-                    }
-                }
-                self.tasks.push(new Task(data));
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && sameOrigin(settings.url)) {
+                // Send the token to same-origin, relative URLs only.
+                // Send the token only if the method warrants CSRF protection
+                // Using the CSRFToken value acquired earlier
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
             }
         }
     });
-
-    self.save = function() {
-        $.ajax("/update_tasks?date="+self.date, {
-            data: ko.toJSON({tasks: task_list_model.tasks,}),
-            type: "post", 
-            dataType: "json",
-            success: function(allData) {
-            var mapped_tasks = $.map(allData, function(item) {
-                return new Task(item)
-                });
-                self.tasks(mapped_tasks);
-            }
-        });
-    };
-};
-
-var task_list_model = new TaskListViewModel()
-ko.applyBindings(task_list_model);
-
-var csrftoken = $("input[name='csrfmiddlewaretoken']").val();
-
-function csrfSafeMethod(method) {
-    // these HTTP methods do not require CSRF protection
-    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-}
-
-function sameOrigin(url) {
-    // test that a given url is a same-origin URL
-    // url could be relative or scheme relative or absolute
-    var host = document.location.host; // host + port
-    var protocol = document.location.protocol;
-    var sr_origin = '//' + host;
-    var origin = protocol + sr_origin;
-    // Allow absolute or scheme relative URLs to same origin
-    return (url == origin || url.slice(0, origin.length + 1) == origin + '/') ||
-        (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
-        // or any other URL that isn't scheme relative or absolute i.e relative.
-        !(/^(\/\/|http:|https:).*/.test(url));
-}
-
-$.ajaxSetup({
-    beforeSend: function(xhr, settings) {
-        if (!csrfSafeMethod(settings.type) && sameOrigin(settings.url)) {
-            // Send the token to same-origin, relative URLs only.
-            // Send the token only if the method warrants CSRF protection
-            // Using the CSRFToken value acquired earlier
-            xhr.setRequestHeader("X-CSRFToken", csrftoken);
-        }
-    }
-});
-
 </script>
 {% endblock %}

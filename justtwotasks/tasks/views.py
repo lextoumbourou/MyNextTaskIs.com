@@ -67,15 +67,11 @@ def get_tasks(request):
     """
     date = get_date(request)
     user = request.user
-    if ('completed' in request.GET) and (request.GET['completed'] != '0'):
-        completed = True
-    else:
-        completed = False
-
-    # Get all of today's tasks
-    tasks = Task.objects.filter(user=user,
-                                is_complete=completed,
-                                created=date.date()).order_by('id')
+    
+    # Get all of today's tasks, since only 1 will be incomplete, 
+    # we'll know it'll be the first one
+    tasks = Task.objects.filter(
+        user=user, created=date.date()).order_by('is_complete', 'id')
 
     data = serializers.serialize('json', tasks)
     return HttpResponse(data)
@@ -92,17 +88,16 @@ def update_task(request):
     if request.method == 'POST':
         json_data = json.loads(request.raw_post_data)
         if 'task' in json_data:
-            if 'pk' in json_data and int(json_data['pk']) > 0:
-                task = Task.objects.get(user=user, pk=t['pk'])
+            if 'pk' in json_data and int(json_data['pk']) != 0:
+                task = Task.objects.get(user=user, pk=json_data['pk'])
                 task.task = json_data['task']
                 task.is_complete = json_data['is_complete']
                 task.save()
             # Otherwise, it's brand new
             else:
-                Task.objects.create(user=user, 
-                                    task=json_data['task'], 
-                                    created=date,
-                                    is_complete=False)
+                Task.objects.create(
+                    user=user, task=json_data['task'], 
+                    created=date, is_complete=False)
 
     return get_tasks(request)
 
