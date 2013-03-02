@@ -3,13 +3,35 @@ import json
 
 from django.core.context_processors import csrf
 from django.core import serializers
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.template import RequestContext
 from django.shortcuts import render_to_response
 from lazysignup.decorators import allow_lazy_user
 
 from justtwotasks.tasks.models import Task
 import justtwotasks.settings as settings
+
+
+@allow_lazy_user
+def request_dispatcher(request, task=None):
+    """
+    Route to the correct view depending on HTTP method
+    """
+    if (request.method == 'DELETE') and (task is not None):
+        return delete_task(request, task)
+
+
+@allow_lazy_user
+def delete_task(result, task):
+    """
+    Delete a task if it exists
+    """
+    try:
+        task = Task.objects.get(pk=task)
+    except Task.DoesNotExist:
+        return Http404
+    task.delete()
+    return HttpResponse(status=200)
 
 
 @allow_lazy_user

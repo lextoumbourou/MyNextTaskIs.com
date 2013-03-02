@@ -23,6 +23,5 @@ class TasksTest(TestCase):
             user=user, task="Test task", created=datetime.today(), is_complete=False)
         c = Client()
         response = c.delete('/task/{0}'.format(t.pk))
-        key = t.pk
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(Task.objects.get(pk=key), None)
+        self.assertFalse(Task.objects.filter(pk=t.pk))
