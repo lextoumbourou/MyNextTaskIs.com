@@ -44,7 +44,7 @@ function TaskListViewModel() {
     self.assign_to_arrays = function(allData) {
         // Due to the way the backend works, 
         // the first task will always be the incomplete
-        if (!$.isEmptyObject(allData) && allData[0].is_complete) {
+        if ($.isEmptyObject(allData) || allData[0].is_complete) {
             task = [new Task({pk: 0, fields: { task:"", is_complete:false }})];
         }
         else {
