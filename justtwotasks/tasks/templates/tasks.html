@@ -6,27 +6,38 @@
     {% csrf_token %}
     <input type="hidden" id="page_date" name="date" value="{{ date.date|date:'Ymd' }}" />
     <div id="task">
-        <!-- ko foreach: incomplete_task -->
+        <!-- ko with: incomplete_task -->
         <div class="row-fluid">
             <div class="task input-prepend input-append">
-                <a href="#" class="btn" data-bind="click: function() {
-                                                              complete_task(),
-                                                              $parent.save();
-                                                          },"/>
+                <a href="#" class="btn disabled" data-bind="click: function(task) {
+                                                              if (pk()) {
+                                                                  complete_task(),
+                                                                  $parent.save(task);
+                                                                  $parent.update_completed(task);
+                                                              }
+                                                             },
+                                                            css: {'disabled': !task()}"/>
                     <i class="icon-ok"></i>
                 </a>
 
                 <input name="task" class="task-input input-xxlarge" type="text" 
                        value=""  data-bind="value: task, 
-                                            event: {change: $parent.save}" />
+                                            valueUpdate: 'afterkeydown',
+                                            event: { focus: function(task) { 
+                                                                if (!pk()) { 
+                                                                    $parent.save(task); 
+                                                                };
+                                                             },
+                                                     change: $parent.save, }" />
 
                 <input type="hidden" data-bind="value: pk" />
-
-                <a href="#" class="btn" 
-                    data-bind="click: function() {
-                                          delete_task(),
-                                          $parent.clear_task();
-                                       },">
+                <a href="#" class="btn disabled" data-bind="css: {'disabled': !task()}"><i class="icon-time"></i></aa>
+                <a href="#" class="btn disabled" data-bind="click: function(task) { 
+                                                                       if (pk() != 0) {
+                                                                               $parent.delete_task(task);
+                                                                       };
+                                                                   },
+                                                            css: {'disabled': !task()}">
                     <i class="icon-remove"></i>
                 </a>
             </div>
@@ -37,9 +48,17 @@
             <h2><small>{% block slogan %}{{ slogan }}{% endblock %}</small></h2>
         </div>
 
-        <ul data-bind="foreach: completed_tasks">
-            <li data-bind="text: task"></li>
-        </ul>
+        <div class="row-fluid">
+            <div class="span8" 
+                data-bind='template: { foreach: completed_tasks,
+                                       beforeRemove: hide_task_element,
+                                       afterAdd: show_task_element }'>
+                <div class="alert alert-success">
+                    <button type="button" class="close" data-dismiss="alert" data-bind="click: $parent.delete_task">&times;</button>
+                    <span data-bind="text: task"></span>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 </form>
