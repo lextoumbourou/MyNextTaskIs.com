@@ -3,10 +3,16 @@ function Task(data) {
     this.pk = ko.observable(data.pk);
     this.task = ko.observable(data.fields.task);
     this.is_complete = ko.observable(data.fields.is_complete);
-    self.remove_task = function() {
-        self.is_complete(false);
-        self.task("");
+    this.delete_task = function() {
+        $.ajax("/task/"+self.pk(), {
+            type: "delete",
+            success: function() {
+                self.is_complete(false);
+                self.task("");
+            },
+        });
     };
+
     self.complete_task = function() {
         self.is_complete(true);
     };
