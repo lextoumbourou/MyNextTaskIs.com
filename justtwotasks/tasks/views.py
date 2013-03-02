@@ -35,8 +35,7 @@ def create_task(request):
             user=request.user, task=json_data['task'],
             is_complete=False, created=datetime.today())
 
-    data = serializers.serialize('json', [task])
-    return HttpResponse(data)
+    return get_tasks(request)
 
 
 @allow_lazy_user
