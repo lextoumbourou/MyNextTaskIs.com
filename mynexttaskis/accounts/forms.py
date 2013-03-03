@@ -6,7 +6,7 @@ from django.contrib.auth.forms import UserCreationForm as BaseUserCreationForm
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 
-from justtwotasks.accounts.models import UserProfile
+from mynexttaskis.accounts.models import UserProfile
 
 
 class ProfileForm(ModelForm):

@@ -8,8 +8,8 @@ from django.template import RequestContext
 from django.shortcuts import render_to_response
 from lazysignup.decorators import allow_lazy_user
 
-from justtwotasks.tasks.models import Task
-import justtwotasks.settings as settings
+from mynexttaskis.tasks.models import Task
+import mynexttaskis.settings as settings
 
 
 def request_dispatcher(request, task=None):

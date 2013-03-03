@@ -112,7 +112,7 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = private.ROOT_URLCONF
 
 # Python dotted path to the WSGI application used by Django's runserver.
-WSGI_APPLICATION = 'justtwotasks.wsgi.application'
+WSGI_APPLICATION = 'mynexttaskis.wsgi.application'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
@@ -136,12 +136,12 @@ INSTALLED_APPS = (
     'registration',
     'compressor',
     'profiles',
-    'justtwotasks.accounts',
-    'justtwotasks.tasks',
+    'mynexttaskis.accounts',
+    'mynexttaskis.tasks',
 )
 
 AUTHENTICATION_BACKENDS = (
-    'justtwotasks.accounts.backends.EmailOrUsernameModelBackend',
+    'mynexttaskis.accounts.backends.EmailOrUsernameModelBackend',
     'django.contrib.auth.backends.ModelBackend',
     'lazysignup.backends.LazySignupBackend',
 )
@@ -188,7 +188,7 @@ COMPRESS_PRECOMPILERS = (
 
 INTERNAL_IPS = ('127.0.0.1',)
 
-AUTH_PROFILE_MODULE = 'justtwotasks.accounts.UserProfile'
+AUTH_PROFILE_MODULE = 'mynexttaskis.accounts.UserProfile'
 APPEND_SLASH = True
 
 # Django Bootup configuration settings

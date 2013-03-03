@@ -19,7 +19,7 @@ for item in list(sys.path):
         sys.path.remove(item)
 sys.path[:0] = new_sys_path
 
-os.environ['DJANGO_SETTINGS_MODULE'] = 'justtwotasks.settings'
+os.environ['DJANGO_SETTINGS_MODULE'] = 'mynexttaskis.settings'
 
 import django.core.handlers.wsgi
 application = django.core.handlers.wsgi.WSGIHandler()

@@ -12,7 +12,7 @@ from django.test.client import Client
 from django.core import serializers
 from django.contrib.auth.models import User
 
-from justtwotasks.tasks.models import Task
+from mynexttaskis.tasks.models import Task
 
 
 class TasksTest(TestCase):

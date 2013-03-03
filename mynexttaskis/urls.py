@@ -13,5 +13,5 @@ urlpatterns = patterns('',
     url(r'^profiles/edit/?', 'profiles.views.edit_profile', {'form_class': ProfileForm,
                                                              'success_url': '/'}),
     url(r'^convert', include('lazysignup.urls'), {'form_class' : UserCreationForm}),
-    url(r'^', include('justtwotasks.tasks.urls')),
+    url(r'^', include('mynexttaskis.tasks.urls')),
 )
