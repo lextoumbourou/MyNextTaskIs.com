@@ -7,6 +7,7 @@ class Task(models.Model):
     task = models.CharField(max_length=200)
     is_complete = models.BooleanField()
     created = models.DateField()
+    time_taken = models.IntegerField(blank=True, null=True)
 
     def __unicode__(self):
         return self.task

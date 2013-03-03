@@ -10,6 +10,16 @@
         <div class="row-fluid">
             <form id="task-form">
                 <div class="task input-prepend input-append">
+                    <a href="#" class="btn disabled" data-bind="click: function(task) {
+                                                                  if (pk()) {
+                                                                      complete_task(),
+                                                                      $parent.save(task);
+                                                                      $parent.update_completed(task);
+                                                                  }
+                                                                 },
+                                                                css: {'disabled': !task()}"/>
+                        <i class="icon-ok"></i>
+                    </a>
                     <input name="task" class="task-input span7" type="text" 
                            value=""  data-bind="value: task, 
                                                 valueUpdate: 'afterkeydown',
@@ -30,16 +40,7 @@
                         </a>
                         <span data-bind="text: timer"></span>
                     </div>
-                    <a href="#" class="btn disabled" data-bind="click: function(task) {
-                                                                  if (pk()) {
-                                                                      complete_task(),
-                                                                      $parent.save(task);
-                                                                      $parent.update_completed(task);
-                                                                  }
-                                                                 },
-                                                                css: {'disabled': !task()}"/>
-                        <i class="icon-ok"></i>
-                    </a>
+                    
                     <a href="#" class="btn disabled" data-bind="click: function(task) { 
                                                                            if (pk() != 0) {
                                                                                    $parent.delete_task(task);
@@ -65,7 +66,8 @@
                                        afterAdd: show_task_element }'>
                 <div class="alert alert-success">
                     <button type="button" class="close" data-dismiss="alert" data-bind="click: $parent.delete_task">&times;</button>
-                    <span data-bind="text: task"></span>
+                    <b data-bind="text: task"></b> 
+                    <div data-bind="visible: time_taken"><br><em data-bind="text: time_as_english()"></em></div>
                 </div>
             </div>
         </div>

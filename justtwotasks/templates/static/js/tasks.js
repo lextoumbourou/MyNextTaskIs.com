@@ -1,3 +1,15 @@
+function convert_to_date_string(seconds) {
+    hours = Math.floor(seconds / (60 * 60));
+    minutes = Math.floor((seconds - (hours * 60 * 60)) / 60);
+    seconds = seconds - (minutes * 60) - (hours * (60*60));
+
+    date_string = ('0' + hours).slice(-2) + ':';
+    date_string = date_string + ('0' + minutes).slice(-2) + ':';
+    date_string = date_string + ('0' + seconds).slice(-2);
+
+    return date_string
+}
+
 function Task(data) {
     var self = this;
     this.pk = ko.observable(data.pk);
@@ -5,7 +17,7 @@ function Task(data) {
     this.is_complete = ko.observable(data.fields.is_complete);
     this.timer = ko.observable('00:00:00');
     this.timer_is_running = ko.observable(false);
-    self.time = new Date(0, 0, 0, 0, 0, 0);
+    self.time_taken = ko.observable(data.fields.time_taken ? data.fields.time_taken : 0);
 
     this.complete_task = function() {
         self.is_complete(true);
@@ -22,13 +34,34 @@ function Task(data) {
     }
 
     this.update_timer = function() {
-        self.time.setSeconds(self.time.getSeconds() + 1)
-        date_string = ('0' + self.time.getHours()).slice(-2) + ':'
-        date_string = date_string + ('0' + self.time.getMinutes()).slice(-2) + ':'
-        date_string = date_string + ('0' + self.time.getSeconds()).slice(-2)
+        self.time_taken(self.time_taken() + 1);
+        date_string = convert_to_date_string(self.time_taken());
         self.timer(date_string);
     };
 
+    this.time_as_english = function() {
+        hours = Math.floor(self.time_taken() / (60 * 60));
+        minutes = Math.floor((self.time_taken() - (hours * 60 * 60)) / 60);
+        seconds = self.time_taken() - (minutes * 60) - (hours * (60*60));
+
+        output = "";
+        if (hours) {
+            output = output + hours;
+            hour_string = hours === 1 ? " hour" : " hours";
+            output = output + hour_string;
+        };
+        if (minutes) {
+            if (output != "") {
+                output = output + ", ";
+            };
+            minute_string = minutes === 1 ? " minute" : " minutes";
+            output = output + minutes + minute_string + " and ";
+        };
+        second_string = seconds === 1 ? " second" : " seconds";
+        output = output + seconds + second_string;
+
+        return output;
+    };
 }
 
 function TaskListViewModel() {
@@ -76,7 +109,8 @@ function TaskListViewModel() {
 
         $.ajax(url, {
             data: ko.toJSON(
-                {'task': task.task(), 'is_complete': task.is_complete(),}),
+                {'task': task.task(), 'is_complete': task.is_complete(), 
+                 'time_taken': task.time_taken,}),
             type: "post", 
             dataType: "json",
             success: function(allData) {
@@ -89,6 +123,7 @@ function TaskListViewModel() {
     };
 
     this.update_completed = function(task) {
+        task.pause_timer();
         self.completed_tasks.push(task);
         self.incomplete_task(self.empty_task());
     };
@@ -102,7 +137,6 @@ function TaskListViewModel() {
         if (elem.nodeType === 1) $(elem).fadeOut(function() { $(elem).remove(); }) 
     }
 };
-
 
 var task_list_model = new TaskListViewModel()
 ko.applyBindings(task_list_model);
