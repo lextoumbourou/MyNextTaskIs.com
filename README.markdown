@@ -1,3 +1,3 @@
-# JustTwoTasks.com repo
+# MyNextTaskIs.com repo
 
-Codebase for my JustTwoTasks.com productivity experiment
+Codebase for my MyNextTaskIs.com productivity experiment (previously called JustTwoTasks.com)
