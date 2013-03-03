@@ -55,7 +55,7 @@
         </div>
         <!-- /ko -->
 
-        <div class="row-fluid">
+        <div class="row-fluid" data-bind="visible: completed_tasks().length > 0">
             <h3>{% block slogan %}{{ slogan }}{% endblock %}</h3>
         </div>
 
