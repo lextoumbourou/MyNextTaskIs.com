@@ -10,18 +10,7 @@
         <div class="row-fluid">
             <form id="task-form">
                 <div class="task input-prepend input-append">
-                    <a href="#" class="btn disabled" data-bind="click: function(task) {
-                                                                  if (pk()) {
-                                                                      complete_task(),
-                                                                      $parent.save(task);
-                                                                      $parent.update_completed(task);
-                                                                  }
-                                                                 },
-                                                                css: {'disabled': !task()}"/>
-                        <i class="icon-ok"></i>
-                    </a>
-
-                    <input name="task" class="task-input input-xxlarge" type="text" 
+                    <input name="task" class="task-input span7" type="text" 
                            value=""  data-bind="value: task, 
                                                 valueUpdate: 'afterkeydown',
                                                 event: { focus: function(task) { 
@@ -32,9 +21,24 @@
                                                          change: $parent.save, }" />
 
                     <input type="hidden" data-bind="value: pk" />
-                    <a href="#" class="btn disabled" data-bind="css: {'disabled': !task()},
-                                                                click: start_timer">
-                        <i class="icon-time"></i>
+                    <div class="add-on">
+                        <a href="#" data-bind="click: start_timer, visible: !timer_is_running()">
+                            <i class="icon-play"></i>
+                        </a>
+                        <a href="#" data-bind="click: pause_timer, visible: timer_is_running">
+                            <i class="icon-pause"></i>
+                        </a>
+                        <span data-bind="text: timer"></span>
+                    </div>
+                    <a href="#" class="btn disabled" data-bind="click: function(task) {
+                                                                  if (pk()) {
+                                                                      complete_task(),
+                                                                      $parent.save(task);
+                                                                      $parent.update_completed(task);
+                                                                  }
+                                                                 },
+                                                                css: {'disabled': !task()}"/>
+                        <i class="icon-ok"></i>
                     </a>
                     <a href="#" class="btn disabled" data-bind="click: function(task) { 
                                                                            if (pk() != 0) {
@@ -45,19 +49,17 @@
                         <i class="icon-remove"></i>
                     </a>
                 </div>
-                <div class="timer">
-                    <span class="help-block" data-bind="text: timer"></span>
-                </div>
+                
             </form>
         </div>
         <!-- /ko -->
 
         <div class="row-fluid">
-            <h2><small>{% block slogan %}{{ slogan }}{% endblock %}</small></h2>
+            <h3>{% block slogan %}{{ slogan }}{% endblock %}</h3>
         </div>
 
-        <div class="row-fluid">
-            <div class="span8" 
+        <div id="completed-tasks" class="row-fluid">
+            <div class="span9" 
                 data-bind='template: { foreach: completed_tasks,
                                        beforeRemove: hide_task_element,
                                        afterAdd: show_task_element }'>

@@ -23,7 +23,12 @@ brand {
     padding-left:20px;
 }
 
-.timer {
+.task-options {
+    margin-left: 543px
+}
+
+.task-options h4 {
+    color: #3A87AD;
 }
 
 .footer {

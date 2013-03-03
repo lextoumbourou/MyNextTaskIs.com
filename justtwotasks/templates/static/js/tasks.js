@@ -3,17 +3,24 @@ function Task(data) {
     this.pk = ko.observable(data.pk);
     this.task = ko.observable(data.fields.task);
     this.is_complete = ko.observable(data.fields.is_complete);
-    this.timer = ko.observable();
-    this.time = {};
+    this.timer = ko.observable('00:00:00');
+    this.timer_is_running = ko.observable(false);
+    self.time = new Date(0, 0, 0, 0, 0, 0);
 
     this.complete_task = function() {
         self.is_complete(true);
     };
 
     this.start_timer = function() {
-        self.time = new Date(0, 0, 0, 0, 0, 0);
-        setInterval(self.update_timer, 1000);
+        self.interval_id = setInterval(self.update_timer, 1000);
+        self.timer_is_running(true);
     }
+
+    this.pause_timer = function() {
+        clearInterval(self.interval_id);
+        self.timer_is_running(false);
+    }
+
     this.update_timer = function() {
         self.time.setSeconds(self.time.getSeconds() + 1)
         date_string = ('0' + self.time.getHours()).slice(-2) + ':'
