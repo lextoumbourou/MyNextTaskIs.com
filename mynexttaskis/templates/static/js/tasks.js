@@ -43,7 +43,7 @@ function convert_to_english(total_seconds) {
     if (minutes) {
         if (hours && !seconds) {
             output = output + " and ";
-        };
+        }
         else if (hours) {
             output = output + ", ";
         };
