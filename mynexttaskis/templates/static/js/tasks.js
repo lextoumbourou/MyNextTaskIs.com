@@ -1,3 +1,6 @@
+/*
+ * Return a date string in format hh:mm:ss
+ */
 function convert_to_date_string(seconds) {
     hours = Math.floor(seconds / (60 * 60));
     minutes = Math.floor((seconds - (hours * 60 * 60)) / 60);
@@ -10,6 +13,46 @@ function convert_to_date_string(seconds) {
     return date_string
 }
 
+/*
+ * Convert a date string to total seconds or false if malformed
+ */
+function convert_from_date_string(date_string) {
+    var date_string_pattern = new RegExp("[0-9][0-9]:[0-5][0-9]:[0-5][0-9]");
+    if (!date_string_pattern.test(date_string)) {
+        return false;
+    }
+    var date_split = date_string.split(":");
+    var hours = parseInt(date_split[0]);
+    var minutes = parseInt(date_split[1]);
+    var seconds = parseInt(date_split[2]);
+
+    return (hours * 60 * 60) + (minutes * 60) + seconds;
+}
+
+function convert_to_english(total_seconds) {
+    hours = Math.floor(total_seconds / (60 * 60));
+    minutes = Math.floor((total_seconds - (hours * 60 * 60)) / 60);
+    seconds = total_seconds - (minutes * 60) - (hours * (60*60));
+
+    output = "";
+    if (hours) {
+        output = output + hours;
+        hour_string = hours === 1 ? " hour" : " hours";
+        output = output + hour_string;
+    };
+    if (minutes) {
+        if (output != "") {
+            output = output + ", ";
+        };
+        minute_string = minutes === 1 ? " minute" : " minutes";
+        output = output + minutes + minute_string + " and ";
+    };
+    second_string = seconds === 1 ? " second" : " seconds";
+    output = output + seconds + second_string;
+
+    return output;
+}
+
 function Task(data) {
     var self = this;
     this.pk = ko.observable(data.pk);
@@ -18,7 +61,11 @@ function Task(data) {
     this.timer = ko.observable('00:00:00');
     this.timer_is_running = ko.observable(false);
     self.time_taken = ko.observable(data.fields.time_taken ? data.fields.time_taken : 0);
+    this.editing_time = ko.observable(false);
 
+    this.update_time_taken = function(date_string) {
+        console.log(date_string);
+    };
     this.complete_task = function() {
         self.is_complete(true);
     };
@@ -39,29 +86,30 @@ function Task(data) {
         self.timer(date_string);
     };
 
-    this.time_as_english = function() {
-        hours = Math.floor(self.time_taken() / (60 * 60));
-        minutes = Math.floor((self.time_taken() - (hours * 60 * 60)) / 60);
-        seconds = self.time_taken() - (minutes * 60) - (hours * (60*60));
+    this.edit_time = function() {
+        self.editing_time(true);
+    }
 
-        output = "";
-        if (hours) {
-            output = output + hours;
-            hour_string = hours === 1 ? " hour" : " hours";
-            output = output + hour_string;
-        };
-        if (minutes) {
-            if (output != "") {
-                output = output + ", ";
-            };
-            minute_string = minutes === 1 ? " minute" : " minutes";
-            output = output + minutes + minute_string + " and ";
-        };
-        second_string = seconds === 1 ? " second" : " seconds";
-        output = output + seconds + second_string;
+    this.formatted_date = ko.computed({
+        read: function() {
+            if (!self.editing_time()) {
+                return convert_to_english(self.time_taken());
+            }
+            else {
+                return convert_to_date_string(self.time_taken());
+            }
+        },
+        write: function(value) {
+            total_time = convert_from_date_string(value);
+            if (total_time) {
+                self.time_taken(total_time);
+            }
+        }
+    });
 
-        return output;
-    };
+    this.time_as_editable = function() {
+        return convert_to_date_string(self.time_taken());
+    }
 }
 
 function TaskListViewModel() {

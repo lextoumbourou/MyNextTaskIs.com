@@ -67,7 +67,11 @@
                 <div class="alert alert-success">
                     <button type="button" class="close" data-dismiss="alert" data-bind="click: $parent.delete_task">&times;</button>
                     <b data-bind="text: task"></b> 
-                    <div data-bind="visible: time_taken"><br><em data-bind="text: time_as_english()"></em></div>
+                    <p>
+                        <br>
+                        <em data-bind="click: edit_time, visible: !editing_time(), text: formatted_date"></em>
+                        <input data-bind="visible: editing_time, value: formatted_date, hasfocus: editing_time, event: { change: $parent.save }">
+                    </p>
                 </div>
             </div>
         </div>
