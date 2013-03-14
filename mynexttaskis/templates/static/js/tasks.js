@@ -45,10 +45,19 @@ function convert_to_english(total_seconds) {
             output = output + ", ";
         };
         minute_string = minutes === 1 ? " minute" : " minutes";
-        output = output + minutes + minute_string + " and ";
+        output = output + minutes + minute_string
+        if (seconds) {
+            output = output + " and ";
+        };
+    }
+    if (seconds || (!hours && !minutes && !seconds))
+    {
+        if (!minutes && hours) {
+            output = output + " and "
+        };
+        second_string = seconds === 1 ? " second" : " seconds";
+        output = output + seconds + second_string;
     };
-    second_string = seconds === 1 ? " second" : " seconds";
-    output = output + seconds + second_string;
 
     return output;
 }
@@ -101,7 +110,7 @@ function Task(data) {
         },
         write: function(value) {
             total_time = convert_from_date_string(value);
-            if (total_time) {
+            if (total_time >= 0) {
                 self.time_taken(total_time);
             }
         }
