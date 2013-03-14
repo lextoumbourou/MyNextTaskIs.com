@@ -113,7 +113,7 @@ function Task(data) {
         },
         write: function(value) {
             total_time = convert_from_date_string(value);
-            if (total_time >= 0) {
+            if (total_time !== false) {
                 self.time_taken(total_time);
             }
         }
