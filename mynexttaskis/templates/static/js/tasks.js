@@ -41,7 +41,10 @@ function convert_to_english(total_seconds) {
         output = output + hour_string;
     };
     if (minutes) {
-        if (output != "") {
+        if (hours && !seconds) {
+            output = output + " and ";
+        };
+        else if (hours) {
             output = output + ", ";
         };
         minute_string = minutes === 1 ? " minute" : " minutes";
