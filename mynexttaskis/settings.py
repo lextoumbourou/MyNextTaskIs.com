@@ -189,7 +189,7 @@ COMPRESS_PRECOMPILERS = (
 
 INTERNAL_IPS = ('127.0.0.1',)
 
-AUTH_PROFILE_MODULE = 'mynexttaskis.accounts.UserProfile'
+AUTH_PROFILE_MODULE = 'mynexttaskis.accounts.models.UserProfile'
 APPEND_SLASH = True
 
 # Django Bootup configuration settings

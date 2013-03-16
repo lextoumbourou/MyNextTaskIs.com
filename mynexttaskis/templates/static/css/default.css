@@ -48,3 +48,18 @@ brand {
     margin-bottom: 60px;
 }
 
+.completed_task {
+  padding: 8px 35px 8px 14px;
+  margin-bottom: 30px;
+  background-color: #128044;
+  border: 1px solid transparent;
+  -webkit-border-radius: 0;
+     -moz-border-radius: 0;
+          border-radius: 0;
+  color: #ffffff;
+  border-color: transparent;
+}
+
+
+
+
