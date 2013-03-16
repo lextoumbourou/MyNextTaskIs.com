@@ -17,9 +17,14 @@
     <body>
         <div id="wrap">
             <div class="container">
-                <div class="navbar">
-                    <div class="navbar-inner">
-                        <ul class="nav pull-right">
+                <header class="jumbotron subhead">
+                    <div class="row">
+                        <div class="span9">
+                            <h1>My Next Task Is</h1>
+                            <p class="lead">Measure your focus; be productive</p>
+                        </div>
+                        <div class="span3">
+                            <ul class="nav nav-tabs">
                             {% if user.is_authenticated %}
                             {% if not user|is_lazy_user %}
                             <li class="dropdown">
@@ -44,16 +49,7 @@
                             {% endif %}
                         </ul>
                     </div>
-                </div>
-            </div>
-            <div class="container">
-                <header class="jumbotron subhead">
-                    <div class="row">
-                        <div class="span9">
-                            <h1>My Next Task Is</h1>
-                            <p class="lead">Measure your focus; be productive</p>
-                        </div>
-                        <div class="span3"></div>
+
                     </div>
                 </header>
                 {% block content %}
