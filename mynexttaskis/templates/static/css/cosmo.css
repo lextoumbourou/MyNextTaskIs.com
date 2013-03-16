@@ -1746,11 +1746,6 @@ select:focus:invalid:focus {
   border-color: #3fb618;
 }
 
-.input-prepend .add-on,
-.input-prepend .btn {
-  margin-right: -1px;
-}
-
 .input-prepend .add-on:first-child,
 .input-prepend .btn:first-child {
   -webkit-border-radius: 0 0 0 0px;
@@ -1772,12 +1767,6 @@ select:focus:invalid:focus {
   -webkit-border-radius: 0 0 0px 0;
      -moz-border-radius: 0 0 0px 0;
           border-radius: 0 0 0px 0;
-}
-
-.input-append .add-on,
-.input-append .btn,
-.input-append .btn-group {
-  margin-left: -1px;
 }
 
 .input-append .add-on:last-child,
@@ -3165,7 +3154,6 @@ table th[class*="span"],
   font-size: 20px;
   font-weight: bold;
   line-height: 20px;
-  color: #fff;
   text-shadow: 0 1px 0 #ffffff;
   opacity: 0.2;
   filter: alpha(opacity=20);
@@ -3173,7 +3161,6 @@ table th[class*="span"],
 
 .close:hover,
 .close:focus {
-  color: #fff;
   text-decoration: none;
   cursor: pointer;
   opacity: 0.4;
@@ -6439,10 +6426,6 @@ div.subnav-fixed {
   -webkit-box-shadow: none;
      -moz-box-shadow: none;
           box-shadow: none;
-}
-
-.btn.disabled {
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .btn-large {
