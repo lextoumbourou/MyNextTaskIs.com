@@ -75,16 +75,27 @@ function Task(data) {
     self.time_taken = ko.observable(data.fields.time_taken ? data.fields.time_taken : 0);
     this.editing_time = ko.observable(false);
     this.editing_title = ko.observable(false);
+    this.start_time = ko.observable(
+        data.fields.start_time ? data.fields.start_time : null);
+    this.end_time = ko.observable(
+        data.fields.end_time ? data.fields.end_time : null);
 
     this.update_time_taken = function(date_string) {
         console.log(date_string);
     };
 
     this.complete_task = function() {
+        if (!self.start_time()) {
+            self.start_time(new Date().valueOf());
+        };
+        self.end_time(new Date().valueOf());
         self.is_complete(true);
     };
 
     this.start_timer = function() {
+        if (!self.start_time()) {
+            self.start_time(new Date().valueOf());
+        };
         self.interval_id = setInterval(self.update_timer, 1000);
         self.timer_is_running(true);
     };
@@ -174,15 +185,10 @@ function TaskListViewModel() {
         }
 
         $.ajax(url, {
-            data: ko.toJSON(
-                {'task': task.task(), 'is_complete': task.is_complete(), 
-                 'time_taken': task.time_taken,}),
+            data: ko.toJSON(task),
             type: "post", 
             dataType: "json",
             success: function(allData) {
-                if (task.is_complete()) {
-                    
-                }
                 task.pk(allData[0].pk);
             },
         });

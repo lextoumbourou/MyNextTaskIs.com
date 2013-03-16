@@ -114,6 +114,12 @@ def update_task(request, task):
         task.is_complete = json_data['is_complete']
     if 'time_taken' in json_data:
         task.time_taken = json_data['time_taken']
+    if 'start_time' in json_data and json_data['start_time']:
+        task.start_time = datetime.fromtimestamp(
+            int(json_data['start_time']) / 1000)
+    if 'end_time' in json_data and json_data['end_time']:
+        task.end_time = datetime.fromtimestamp(
+            int(json_data['end_time']) / 1000)
 
     task.save()
 
