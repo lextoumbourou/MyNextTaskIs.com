@@ -78,6 +78,7 @@ function Task(data) {
     this.update_time_taken = function(date_string) {
         console.log(date_string);
     };
+
     this.complete_task = function() {
         self.is_complete(true);
     };
@@ -85,12 +86,12 @@ function Task(data) {
     this.start_timer = function() {
         self.interval_id = setInterval(self.update_timer, 1000);
         self.timer_is_running(true);
-    }
+    };
 
     this.pause_timer = function() {
         clearInterval(self.interval_id);
         self.timer_is_running(false);
-    }
+    };
 
     this.update_timer = function() {
         self.time_taken(self.time_taken() + 1);
@@ -100,7 +101,7 @@ function Task(data) {
 
     this.edit_time = function() {
         self.editing_time(true);
-    }
+    };
 
     this.formatted_date = ko.computed({
         read: function() {
