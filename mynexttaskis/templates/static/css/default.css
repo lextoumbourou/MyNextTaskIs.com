@@ -60,6 +60,11 @@ brand {
   border-color: transparent;
 }
 
+.input-append .add-on, .input-prepend .add-on {
+    background-color: #DFDFDF;
+    border-color: #DFDFDF;
+}
+
 
 
 
