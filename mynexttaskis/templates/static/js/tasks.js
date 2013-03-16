@@ -74,6 +74,7 @@ function Task(data) {
     this.timer_is_running = ko.observable(false);
     self.time_taken = ko.observable(data.fields.time_taken ? data.fields.time_taken : 0);
     this.editing_time = ko.observable(false);
+    this.editing_title = ko.observable(false);
 
     this.update_time_taken = function(date_string) {
         console.log(date_string);
@@ -101,6 +102,10 @@ function Task(data) {
 
     this.edit_time = function() {
         self.editing_time(true);
+    };
+
+    this.edit_title = function() {
+        self.editing_title(true);
     };
 
     this.formatted_date = ko.computed({

@@ -66,7 +66,8 @@
                                        afterAdd: show_task_element }'>
                 <div class="alert alert-success">
                     <button type="button" class="close" data-dismiss="alert" data-bind="click: $parent.delete_task">&times;</button>
-                    <b data-bind="text: task"></b> 
+                    <b data-bind="click: edit_title, visible: !editing_title(), text: task"></b> 
+                    <input class="input-xxlarge" data-bind="visible: editing_title, value: task, hasfocus: editing_title, event: { change: $parent.save }"></b> 
                     <p>
                         <br>
                         <em data-bind="click: edit_time, visible: !editing_time(), text: formatted_date"></em>
