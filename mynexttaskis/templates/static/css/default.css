@@ -13,6 +13,12 @@ brand {
     text-align:left;
 }
 
+.task-list-input {
+    border: 0;
+    cursor: pointer;
+    text-align:left;
+}
+
 .completed-task {
     text-decoration: line-through;
 }
@@ -64,7 +70,3 @@ brand {
     background-color: #DFDFDF;
     border-color: #DFDFDF;
 }
-
-
-
-
