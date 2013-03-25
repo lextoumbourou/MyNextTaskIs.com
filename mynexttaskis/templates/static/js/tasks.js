@@ -143,14 +143,34 @@ function Task(data) {
 
 function TaskListViewModel() {
     var self = this;
-    this.empty_task = function() {
+
+    // Menu items
+    self.sections = ['Now', 'Next', 'Complete']
+
+    self.chosen_section_id = ko.observable();
+    
+    // Behaviours
+    self.go_to_section = function(section) {
+        location.hash = section;
+    };
+
+    Sammy(function() {
+        this.get('#:section', function() {
+            var url = ('/api/task/' + this.params.section.toLowerCase());
+            $.get(url, function() {
+                // To do
+            });
+        });
+    }).run();
+
+    self.empty_task = function() {
         return new Task({pk: 0, fields: { task:"", is_complete:false }});
     };
 
-    this.completed_tasks = ko.observableArray([]);
-    this.incomplete_task = ko.observable(self.empty_task());
-    this.date = $("#page_date").val();
-    this.all_data = {};
+    self.completed_tasks = ko.observableArray([]);
+    self.incomplete_task = ko.observable(self.empty_task());
+    self.date = $("#page_date").val();
+    self.all_data = {};
 
     $.getJSON('/api/task', function(allData) {
         if (!$.isEmptyObject(allData)) {
