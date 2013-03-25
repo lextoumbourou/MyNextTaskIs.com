@@ -13,10 +13,20 @@ brand {
     text-align:left;
 }
 
+.task-list-element .btn {
+    background-color: #fff;
+    opacity: 0.2;
+}
+
+.task-list-element .btn:hover {
+    opacity: 1;
+}
+
+
 .task-list-input {
     border: 0;
-    cursor: pointer;
     text-align:left;
+    border-bottom: 1px solid #eee;
 }
 
 .completed-task {
