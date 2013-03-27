@@ -79,6 +79,13 @@ def main(request):
 
 
 @allow_lazy_user
+def get_active_task(request):
+    """Return single active task as JSON"""
+    task = Task.objects.filter(user=request.user, is_complete=False)[:1]
+    return HttpResponse(serializers.serialize('json', task)) 
+
+
+@allow_lazy_user
 def get_tasks(request):
     """Retrieve the requested day's tasks (default today)
     and return result as Json
