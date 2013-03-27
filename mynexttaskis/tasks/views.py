@@ -96,9 +96,9 @@ def get_tasks(request):
     # Get all of today's tasks, since only 1 will be incomplete, 
     # we'll know it'll be the first one
     tasks = Task.objects.filter(
-        user=user, created=date.date()).order_by('is_complete', 'id')
+        user=user, created=date.date()).order_by('is_complete', 'id')[0]
 
-    data = serializers.serialize('json', tasks)
+    data = serializers.serialize('json', [tasks])
     return HttpResponse(data)
 
 

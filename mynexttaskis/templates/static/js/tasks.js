@@ -158,15 +158,6 @@ function TaskListViewModel() {
         location.hash = section;
     };
 
-    Sammy(function() {
-        this.get('#:section', function() {
-            var url = ('/api/task/' + this.params.section.toLowerCase());
-            $.get(url, function() {
-                // To do
-            });
-        });
-    }).run();
-
     self.empty_task = function() {
         return new Task({pk: 0, fields: { task:"", is_complete:false }});
     };
@@ -227,11 +218,40 @@ function TaskListViewModel() {
      // Animation callbacks for the planets list
     self.show_task_element = function(elem) { 
         if (elem.nodeType === 1) $(elem).hide().fadeIn() 
-    }
+    };
 
     self.hide_task_element = function(elem) { 
         if (elem.nodeType === 1) $(elem).fadeOut(function() { $(elem).remove(); }) 
-    }
+    };
+
+    Sammy(function() {
+        this.get('/#Now', function() {
+            self.chosen_section_id('Now');
+            var url = ('/api/get_active_task');
+            $.getJSON(url, function(data) {
+                if (data[0]) {
+                    self.incomplete_task(new Task(data[0]));
+                }
+                else {
+                    self.incomplete_task(self.empty_task());
+                }
+            });
+        });
+        this.get('/#Next', function() {
+            self.chosen_section_id('Next');
+            self.incomplete_task(null);
+            var url = ('/api/task');
+            $.getJSON(url, function(data) {
+                console.log(data);
+            });
+        });
+        this.get('/#Complete', function() {
+            self.chosen_section_id('Complete');
+            self.incomplete_task(null);
+        });
+    }).run();
+
+
 };
 
 var task_list_model = new TaskListViewModel()
