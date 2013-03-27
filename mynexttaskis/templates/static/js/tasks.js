@@ -29,6 +29,10 @@ function convert_from_date_string(date_string) {
     return (hours * 60 * 60) + (minutes * 60) + seconds;
 }
 
+/*
+ * Convert a number of seconds to an english language 
+ * date like 4 hours, 3 minutes and 1 second
+ */
 function convert_to_english(total_seconds) {
     hours = Math.floor(total_seconds / (60 * 60));
     minutes = Math.floor((total_seconds - (hours * 60 * 60)) / 60);
@@ -67,24 +71,24 @@ function convert_to_english(total_seconds) {
 
 function Task(data) {
     var self = this;
-    this.pk = ko.observable(data.pk);
-    this.task = ko.observable(data.fields.task);
-    this.is_complete = ko.observable(data.fields.is_complete);
-    this.timer = ko.observable('00:00:00');
-    this.timer_is_running = ko.observable(false);
+    self.pk = ko.observable(data.pk);
+    self.task = ko.observable(data.fields.task);
+    self.is_complete = ko.observable(data.fields.is_complete);
+    self.timer = ko.observable('00:00:00');
+    self.timer_is_running = ko.observable(false);
     self.time_taken = ko.observable(data.fields.time_taken ? data.fields.time_taken : 0);
-    this.editing_time = ko.observable(false);
-    this.editing_title = ko.observable(false);
-    this.start_time = ko.observable(
+    self.editing_time = ko.observable(false);
+    self.editing_title = ko.observable(false);
+    self.start_time = ko.observable(
         data.fields.start_time ? data.fields.start_time : null);
-    this.end_time = ko.observable(
+    self.end_time = ko.observable(
         data.fields.end_time ? data.fields.end_time : null);
 
-    this.update_time_taken = function(date_string) {
+    self.update_time_taken = function(date_string) {
         console.log(date_string);
     };
 
-    this.complete_task = function() {
+    self.complete_task = function() {
         if (!self.start_time()) {
             self.start_time(new Date().valueOf());
         };
@@ -92,7 +96,7 @@ function Task(data) {
         self.is_complete(true);
     };
 
-    this.start_timer = function() {
+    self.start_timer = function() {
         if (!self.start_time()) {
             self.start_time(new Date().valueOf());
         };
@@ -100,26 +104,26 @@ function Task(data) {
         self.timer_is_running(true);
     };
 
-    this.pause_timer = function() {
+    self.pause_timer = function() {
         clearInterval(self.interval_id);
         self.timer_is_running(false);
     };
 
-    this.update_timer = function() {
+    self.update_timer = function() {
         self.time_taken(self.time_taken() + 1);
         date_string = convert_to_date_string(self.time_taken());
         self.timer(date_string);
     };
 
-    this.edit_time = function() {
+    self.edit_time = function() {
         self.editing_time(true);
     };
 
-    this.edit_title = function() {
+    self.edit_title = function() {
         self.editing_title(true);
     };
 
-    this.formatted_date = ko.computed({
+    self.formatted_date = ko.computed({
         read: function() {
             if (!self.editing_time()) {
                 return convert_to_english(self.time_taken());
@@ -136,7 +140,7 @@ function Task(data) {
         }
     });
 
-    this.time_as_editable = function() {
+    self.time_as_editable = function() {
         return convert_to_date_string(self.time_taken());
     }
 }
@@ -187,7 +191,7 @@ function TaskListViewModel() {
         }
     });
 
-    this.delete_task = function(task) {
+    self.delete_task = function(task) {
         if (task.pk()) {
             $.ajax("/api/task/"+task.pk(), {
                 type: "delete",
@@ -198,7 +202,7 @@ function TaskListViewModel() {
         };
     };
 
-    this.save = function(task) {
+    self.save = function(task) {
         url = '/api/task/'
         if (task.pk() != 0) {
             url = url + task.pk()
@@ -214,18 +218,18 @@ function TaskListViewModel() {
         });
     };
 
-    this.update_completed = function(task) {
+    self.update_completed = function(task) {
         task.pause_timer();
         self.completed_tasks.push(task);
         self.incomplete_task(self.empty_task());
     };
 
      // Animation callbacks for the planets list
-    this.show_task_element = function(elem) { 
+    self.show_task_element = function(elem) { 
         if (elem.nodeType === 1) $(elem).hide().fadeIn() 
     }
 
-    this.hide_task_element = function(elem) { 
+    self.hide_task_element = function(elem) { 
         if (elem.nodeType === 1) $(elem).fadeOut(function() { $(elem).remove(); }) 
     }
 };
