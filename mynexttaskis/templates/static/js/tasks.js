@@ -246,6 +246,8 @@ function TaskListViewModel() {
         // here
         task.start_timer();
         self.in_progress_task(task);
+        location.hash = 'NowPlay';
+
         // To do: Update backend with Ajax call
     }
 
@@ -263,6 +265,12 @@ function TaskListViewModel() {
                 }
             });
         });
+
+        this.get('/#NowPlay', function() {
+            self.incomplete_tasks(null);
+            self.chosen_section_id('Now');
+        });
+
         this.get('/#Next', function() {
             self.chosen_section_id('Next');
             self.in_progress_task(null);
