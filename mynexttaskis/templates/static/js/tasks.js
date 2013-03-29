@@ -72,8 +72,9 @@ function convert_to_english(total_seconds) {
 function Task(data) {
     var self = this;
     self.pk = ko.observable(data.pk);
-    self.task = ko.observable(data.fields.task);
+    self.task = ko.observable(data.fields.task || '');
     self.is_complete = ko.observable(data.fields.is_complete);
+    self.is_playing = ko.observable(data.fields.is_playing || false);
     self.timer = ko.observable('00:00:00');
     self.timer_is_running = ko.observable(false);
     self.time_taken = ko.observable(data.fields.time_taken ? data.fields.time_taken : 0);
@@ -240,6 +241,14 @@ function TaskListViewModel() {
         if (elem.nodeType === 1) $(elem).fadeOut(function() { $(elem).remove(); }) 
     };
 
+    self.play_task = function(task) {
+        // To do: pause currently "playing" task
+        // here
+        task.start_timer();
+        self.in_progress_task(task);
+        // To do: Update backend with Ajax call
+    }
+
     Sammy(function() {
         this.get('/#Now', function() {
             self.incomplete_tasks(null);
@@ -277,8 +286,6 @@ function TaskListViewModel() {
             self.in_progress_task(null);
         });
     }).run();
-
-
 };
 
 var task_list_model = new TaskListViewModel()
