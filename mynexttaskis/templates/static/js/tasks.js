@@ -231,16 +231,23 @@ function TaskListViewModel() {
     self.play_task = function(task) {
         // To do: pause currently "playing" task
         // here
-        task.start_timer();
-        self.in_progress_task(task);
-        location.hash = 'NowPlay';
-
-        // To do: Update backend with Ajax call
-    }
+        var elem = $("#task-list-elem-" + task.pk() + " input");
+        elem.css('position', 'absolute').animate({
+            'font-size': '40px',
+            'top': '-=100',
+        }, 500);
+        elem.parents('.task-list-element').siblings()
+            .fadeOut(600, function() {
+                task.start_timer();
+                self.in_progress_task(task);
+                location.hash = 'NowPlay';
+            });
+    };
 
     self.sammy = Sammy(function() {
         this.get('/#Now', function() {
             self.incomplete_tasks(null);
+            self.completed_tasks(null);
             self.chosen_section_id('Now');
             var url = ('/api/task/playing');
             $.getJSON(url, function(data) {
@@ -255,30 +262,44 @@ function TaskListViewModel() {
 
         this.get('/#NowPlay', function() {
             self.incomplete_tasks(null);
+            self.completed_tasks(null);
             self.chosen_section_id('Now');
         });
 
         this.get('/#Next', function() {
-            self.chosen_section_id('Next');
-            self.in_progress_task(null);
-            var url = ('/api/task');
-            $.getJSON(url, function(data) {
-                if (data.length > 0)
-                {
-                    var mapped_tasks = $.map(data, function(item) {
-                            return new Task(item)
-                    });
-                    self.incomplete_tasks(mapped_tasks);
-                }
-                else
-                {
-                    self.incomplete_tasks([self.empty_task()]);
-                }
+            $("#incomplete-tasks").fadeIn(200, function() {
+                self.chosen_section_id('Next');
+                self.completed_tasks(null);
+                self.in_progress_task(null);
+                var url = ('/api/task');
+                $.getJSON(url, function(data) {
+                    if (data.length > 0)
+                    {
+                        var mapped_tasks = $.map(data, function(item) {
+                                return new Task(item)
+                        });
+                        self.incomplete_tasks(mapped_tasks);
+                    }
+                    else
+                    {
+                        self.incomplete_tasks([self.empty_task()]);
+                    }
+                });
             });
         });
+
         this.get('/#Complete', function() {
             self.chosen_section_id('Complete');
             self.in_progress_task(null);
+            self.incomplete_tasks(null);
+            $.getJSON('/api/task', function(data) {
+                var mapped_tasks = $.map(data, function(item) {
+                    if (item.fields.is_complete) {
+                        return new Task(item)
+                    };
+                });
+                self.completed_tasks(mapped_tasks);
+            });
         });
 
         this.get('', function() {
