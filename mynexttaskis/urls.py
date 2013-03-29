@@ -18,6 +18,8 @@ urlpatterns = patterns('',
         {'template': 'robots.txt', 'mimetype': 'text/plain'}),
     url(r'^humans.txt', direct_to_template,
         {'template': 'humans.txt', 'mimetype': 'text/plain'}),
-    url(r'^next', include('mynexttaskis.next.urls')),
-    url(r'^', include('mynexttaskis.tasks.urls')),
+    url(r'^api/', include('mynexttaskis.tasks.urls')),
+    url(r'^', direct_to_template, {
+            'template': 'parent.html'
+        }),
 )

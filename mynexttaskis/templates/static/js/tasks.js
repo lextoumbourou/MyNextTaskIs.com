@@ -242,7 +242,7 @@ function TaskListViewModel() {
         this.get('/#Now', function() {
             self.incomplete_tasks(null);
             self.chosen_section_id('Now');
-            var url = ('/api/get_active_task');
+            var url = ('/api/task/playing');
             $.getJSON(url, function(data) {
                 if (data[0]) {
                     self.in_progress_task(new Task(data[0]));

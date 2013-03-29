@@ -61,8 +61,11 @@
         <div id="wrap">
             <div class="container">
                 {% block content %}
-                {% endblock %}
+                {% csrf_token %}
+                {% include 'now.html' %}
                 {% include 'next.html' %}
+                {% include 'complete.html' %}
+                {% endblock %}
                 <script src="http://code.jquery.com/jquery-latest.js"></script>
                 <script src="/static/bootstrap/js/bootstrap.min.js"></script>
             </div>
@@ -73,6 +76,40 @@
         <script src="/static/js/knockout-2.1.0.js"></script>
         <script src="/static/js/default.js"></script>
         {% block script %}
+        <script src="{{ STATIC_URL }}js/tasks.js"></script>
+        <script>
+            var csrftoken = $("input[name='csrfmiddlewaretoken']").val();
+
+            function csrfSafeMethod(method) {
+                // these HTTP methods do not require CSRF protection
+                return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+            }
+
+            function sameOrigin(url) {
+                // test that a given url is a same-origin URL
+                // url could be relative or scheme relative or absolute
+                var host = document.location.host; // host + port
+                var protocol = document.location.protocol;
+                var sr_origin = '//' + host;
+                var origin = protocol + sr_origin;
+                // Allow absolute or scheme relative URLs to same origin
+                return (url == origin || url.slice(0, origin.length + 1) == origin + '/') ||
+                    (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
+                    // or any other URL that isn't scheme relative or absolute i.e relative.
+                    !(/^(\/\/|http:|https:).*/.test(url));
+            }
+
+            $.ajaxSetup({
+                beforeSend: function(xhr, settings) {
+                    if (!csrfSafeMethod(settings.type) && sameOrigin(settings.url)) {
+                        // Send the token to same-origin, relative URLs only.
+                        // Send the token only if the method warrants CSRF protection
+                        // Using the CSRFToken value acquired earlier
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                }
+            });
+        </script>
         {% endblock %}
 
         {% analytics "UA-38212244-1" %}

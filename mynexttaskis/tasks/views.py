@@ -60,32 +60,6 @@ def delete_task(request, task):
 
 
 @allow_lazy_user
-def main(request):
-    """Collect todays tasks and return template to display to user"""
-    date = get_date(request)
-    slogan = get_slogan(date)
-
-    # Get date strings for displaying the backwards and forwards buttons
-    today = datetime.today()
-    yesterday = date - timedelta(days=1) 
-    tomorrow = date + timedelta(days=1)
-
-    user = request.user
-
-    args = {'date':date,
-            'today':today,
-            'tomorrow':tomorrow,
-            'yesterday':yesterday,
-            'is_today':is_today(date),
-            'slogan':slogan,
-            'debug':settings.TEMPLATE_DEBUG}
-
-    return render_to_response('tasks.html', 
-                              args,
-                              context_instance=RequestContext(request))
-
-
-@allow_lazy_user
 def get_active_task(request):
     """Return single active task as JSON"""
     task = Task.objects.filter(user=request.user, is_complete=False)[:1]
