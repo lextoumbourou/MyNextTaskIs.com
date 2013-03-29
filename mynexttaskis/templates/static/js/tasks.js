@@ -184,21 +184,6 @@ function TaskListViewModel() {
         self.incomplete_tasks.push(self.empty_task());
     };
 
-    $.getJSON('/api/task', function(allData) {
-        if (!$.isEmptyObject(allData)) {
-            if (!allData[0].fields.is_complete) {
-                self.in_progress_task(new Task(allData[0]));
-            }
-
-            var mapped_tasks = $.map(allData, function(item) {
-                if (item.fields.is_complete) {
-                    return new Task(item)
-                }
-            });
-            self.completed_tasks(mapped_tasks);
-        }
-    });
-
     self.delete_task = function(task) {
         if (task.pk()) {
             $.ajax("/api/task/"+task.pk(), {
