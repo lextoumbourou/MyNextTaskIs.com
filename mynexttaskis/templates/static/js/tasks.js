@@ -249,7 +249,7 @@ function TaskListViewModel() {
         // To do: Update backend with Ajax call
     }
 
-    Sammy(function() {
+    self.sammy = Sammy(function() {
         this.get('/#Now', function() {
             self.incomplete_tasks(null);
             self.chosen_section_id('Now');
@@ -285,7 +285,12 @@ function TaskListViewModel() {
             self.chosen_section_id('Complete');
             self.in_progress_task(null);
         });
-    }).run();
+
+        this.get('', function() {
+            this.app.runRoute('get', '/#Now') }
+        );
+    });
+    self.sammy.run();
 };
 
 var task_list_model = new TaskListViewModel()
