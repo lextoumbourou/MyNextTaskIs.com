@@ -5,7 +5,7 @@
 {% csrf_token %}
 <input type="hidden" id="page_date" name="date" value="{{ date.date|date:'Ymd' }}" />
 <div id="task">
-    <!-- ko with: incomplete_task -->
+    <!-- ko with: in_progress_task -->
     <div id="incomplete-task" class="row">
         <div class="span12">
             <form id="task-form">

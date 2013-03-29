@@ -162,15 +162,31 @@ function TaskListViewModel() {
         return new Task({pk: 0, fields: { task:"", is_complete:false }});
     };
 
+
+    self.in_progress_task = ko.observable(self.empty_task());
     self.completed_tasks = ko.observableArray([]);
-    self.incomplete_task = ko.observable(self.empty_task());
+    self.incomplete_tasks = ko.observableArray([self.empty_task()]);
     self.date = $("#page_date").val();
     self.all_data = {};
+
+
+    var KBD_ENTER = 13;
+    self.enter_event = function(data, event) {
+        if (event.which == KBD_ENTER) {
+            self.add_empty_task();
+        };
+
+        return true;
+    };
+
+    self.add_empty_task = function() {
+        self.incomplete_tasks.push(self.empty_task());
+    };
 
     $.getJSON('/api/task', function(allData) {
         if (!$.isEmptyObject(allData)) {
             if (!allData[0].fields.is_complete) {
-                self.incomplete_task(new Task(allData[0]));
+                self.in_progress_task(new Task(allData[0]));
             }
 
             var mapped_tasks = $.map(allData, function(item) {
@@ -187,7 +203,7 @@ function TaskListViewModel() {
             $.ajax("/api/task/"+task.pk(), {
                 type: "delete",
                 success: function() {
-                    self.incomplete_task(self.empty_task());
+                    self.in_progress_task(self.empty_task());
                 },
             });
         };
@@ -212,7 +228,7 @@ function TaskListViewModel() {
     self.update_completed = function(task) {
         task.pause_timer();
         self.completed_tasks.push(task);
-        self.incomplete_task(self.empty_task());
+        self.in_progress_task(self.empty_task());
     };
 
      // Animation callbacks for the planets list
@@ -226,28 +242,39 @@ function TaskListViewModel() {
 
     Sammy(function() {
         this.get('/#Now', function() {
+            self.incomplete_tasks(null);
             self.chosen_section_id('Now');
             var url = ('/api/get_active_task');
             $.getJSON(url, function(data) {
                 if (data[0]) {
-                    self.incomplete_task(new Task(data[0]));
+                    self.in_progress_task(new Task(data[0]));
                 }
                 else {
-                    self.incomplete_task(self.empty_task());
+                    self.in_progress_task(self.empty_task());
                 }
             });
         });
         this.get('/#Next', function() {
             self.chosen_section_id('Next');
-            self.incomplete_task(null);
+            self.in_progress_task(null);
             var url = ('/api/task');
             $.getJSON(url, function(data) {
-                console.log(data);
+                if (data.length > 0)
+                {
+                    var mapped_tasks = $.map(data, function(item) {
+                            return new Task(item)
+                    });
+                    self.incomplete_tasks(mapped_tasks);
+                }
+                else
+                {
+                    self.incomplete_tasks([self.empty_task()]);
+                }
             });
         });
         this.get('/#Complete', function() {
             self.chosen_section_id('Complete');
-            self.incomplete_task(null);
+            self.in_progress_task(null);
         });
     }).run();
 
