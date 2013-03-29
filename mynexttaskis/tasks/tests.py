@@ -57,17 +57,17 @@ class TasksTest(TestCase):
         self.assertEqual(
             response.content, serializers.serialize('json', tasks))
 
-    def test_get_active_task(self):
-        """Get active task"""
+    def test_get_playing_task(self):
+        """Get playing task"""
         t = Task.objects.create(
                 user=self.user, task='Test task', 
                 created=datetime.today(), is_complete=False)
-        response = self.client.get('/api/task/now')
+        response = self.client.get('/api/task/playing')
         task = Task.objects.filter(
             user=self.user, is_complete=False)[0]
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
-            response.content, serializers.serialize('json', task))
+            response.content, serializers.serialize('json', [task]))
 
 
     def test_update_a_task(self):

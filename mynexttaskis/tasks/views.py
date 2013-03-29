@@ -16,13 +16,20 @@ def request_dispatcher(request, task=None):
     """
     Route to the correct view depending on HTTP method
     """
+    # GET - /api/task/ - Return all tasks 
     if (request.method == 'GET') and (task is None):
         return get_tasks(request)
-    elif (request.method == 'POST') and (task is not None):
+    # GET - /api/task/playing - Return playing task
+    elif (request.method == 'GET') and (task == 'playing'):
+        return get_active_task(request)
+    # POST - /api/task/<int> - Update task and return all tasks
+    elif (request.method == 'POST') and (task is not None) and task.isdigit():
         return update_task(request, task)
-    elif (request.method == 'POST') and (task is None):
+    # POST - /api/task or /api/task/new - Create new task and return task
+    elif (request.method == 'POST') and ((task is None) or (task == 'new')):
         return create_task(request)
-    elif (request.method == 'DELETE') and (task is not None):
+    # DELETE - /api/task/<int> - Delete a task and return all tasks
+    elif (request.method == 'DELETE') and (task is not None) and task.isdigit():
         return delete_task(request, task)
 
 
@@ -35,7 +42,7 @@ def create_task(request):
             user=request.user, task=json_data['task'],
             is_complete=False, created=datetime.today())
 
-    return get_tasks(request)
+    return HttpResponse(serializers.serialize('json', [task])) 
 
 
 @allow_lazy_user
@@ -130,7 +137,8 @@ def update_task(request, task):
 
     task.save()
 
-    return get_tasks(request)
+    data = serializers.serialize('json', [task])
+    return HttpResponse(data)
 
 
 def get_date(request):
