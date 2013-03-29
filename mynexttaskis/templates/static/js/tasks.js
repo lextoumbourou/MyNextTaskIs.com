@@ -163,7 +163,6 @@ function TaskListViewModel() {
         return new Task({pk: 0, fields: { task:"", is_complete:false }});
     };
 
-
     self.in_progress_task = ko.observable(self.empty_task());
     self.completed_tasks = ko.observableArray([]);
     self.incomplete_tasks = ko.observableArray([self.empty_task()]);
@@ -189,7 +188,10 @@ function TaskListViewModel() {
             $.ajax("/api/task/"+task.pk(), {
                 type: "delete",
                 success: function() {
-                    self.in_progress_task(self.empty_task());
+                    self.incomplete_tasks.remove(task);
+                    if (self.incomplete_tasks().length < 1) {
+                        self.add_empty_task();
+                    }
                 },
             });
         };
