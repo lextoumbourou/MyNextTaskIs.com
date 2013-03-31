@@ -82,9 +82,9 @@ function Task(data) {
     self.editing_time = ko.observable(false);
     self.editing_title = ko.observable(false);
     self.start_time = ko.observable(
-        data.fields.start_time ? data.fields.start_time : null);
+        data.fields.start_time ? new Date(data.fields.start_time).valueOf() : null);
     self.end_time = ko.observable(
-        data.fields.end_time ? data.fields.end_time : null);
+        data.fields.end_time ? new Date(data.fields.end_time).valueOf() : null);
 
     self.update_time_taken = function(date_string) {
         console.log(date_string);
@@ -185,12 +185,12 @@ function TaskListViewModel() {
         self.incomplete_tasks.push(self.empty_task());
     };
 
-    self.delete_task = function(task, is_playing) {
+    self.delete_task = function(task, in_progress) {
         if (task.pk()) {
             $.ajax("/api/task/"+task.pk(), {
                 type: "delete",
                 success: function() {
-                    if (is_playing) {
+                    if (in_progress) {
                         self.in_progress_task(self.empty_task());
                     }
                     else {
@@ -202,6 +202,23 @@ function TaskListViewModel() {
                 },
             });
         };
+    };
+
+    self.complete_task = function(task, in_progress) {
+        if (task.pk()) {
+            task.pause_timer();
+            task.complete_task();
+            $.post('/api/task/'+task.pk(), ko.toJSON(task), function() {
+                if (in_progress) {
+                    self.in_progress_task(self.empty_task());
+                }
+                else {
+                    self.incomplete_tasks.remove(task);
+                }
+
+                self.completed_tasks.push(task);
+            });
+        }
     };
 
     self.save = function(task) {

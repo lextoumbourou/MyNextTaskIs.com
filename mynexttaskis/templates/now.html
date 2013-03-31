@@ -35,23 +35,15 @@
                         </div>
 
                         <div class="pull-right">
-                            <a href="#" class="btn disabled" data-bind="click: function(task) {
-                                                                              if (pk()) {
-                                                                                  complete_task(),
-                                                                                  $parent.save(task);
-                                                                                  $parent.update_completed(task);
-                                                                              }
-                                                                             },
-                                                                            css: {'disabled': !task()}"/>
+                            <a href="#" class="btn disabled" 
+                               data-bind="click: function(t) { $parent.complete_task(t, true); },
+                                          css: {'disabled': !task()}"/>
                                     <i class="icon-ok"></i>
                                 </a>
                                 
-                                <a href="#" class="btn disabled" data-bind="click: function(task) { 
-                                                                                       if (pk() != 0) {
-                                                                                           $parent.delete_task(task, true);
-                                                                                       };
-                                                                                   },
-                                                                            css: {'disabled': !task()}">
+                                <a href="#" class="btn disabled" 
+                                   data-bind="click: function(task) { $parent.delete_task(task, true); },
+                                              css: {'disabled': !task()}">
                                     <i class="icon-remove"></i>
                                 </a>
                         </div>
