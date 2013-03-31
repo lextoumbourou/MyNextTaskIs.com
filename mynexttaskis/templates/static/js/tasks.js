@@ -231,17 +231,24 @@ function TaskListViewModel() {
     self.play_task = function(task) {
         // To do: pause currently "playing" task
         // here
-        var elem = $("#task-list-elem-" + task.pk() + " input");
-        elem.css('position', 'absolute').animate({
+        var top_task = $(".task-list-element:first-child");
+        top_task_pos = top_task.position();
+        var elem = $("#task-list-elem-" + task.pk());
+        // Fade out the other tasks
+        elem.siblings().fadeOut(200);
+        // Hide the additional buttons
+        elem.find('.btn').fadeOut(200);
+        // Biggify task transition
+        elem.find('input').css('position', 'absolute').animate({
             'font-size': '40px',
-            'top': '-=100',
-        }, 500);
-        elem.parents('.task-list-element').siblings()
-            .fadeOut(600, function() {
+            'top': top_task_pos.top,
+            'left': top_task_pos.left,
+        }, 500, function() {
                 task.start_timer();
                 self.in_progress_task(task);
                 location.hash = 'NowPlay';
-            });
+            }
+        );
     };
 
     self.sammy = Sammy(function() {
