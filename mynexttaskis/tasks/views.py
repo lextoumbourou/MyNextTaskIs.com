@@ -100,6 +100,8 @@ def update_task(request, task):
         task.task = json_data['task']
     if 'is_complete' in json_data:
         task.is_complete = json_data['is_complete']
+    if 'is_paused' in json_data:
+        task.is_paused = json_data['is_paused']
     if 'time_taken' in json_data:
         task.time_taken = json_data['time_taken']
     if 'start_time' in json_data and json_data['start_time']:

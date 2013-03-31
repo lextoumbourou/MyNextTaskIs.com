@@ -7,10 +7,15 @@ class Task(models.Model):
     task = models.CharField(max_length=200)
     is_complete = models.BooleanField()
     is_playing = models.BooleanField()
+    is_paused = models.BooleanField()
     created = models.DateField()
     start_time = models.DateField(blank=True, null=True)
     end_time = models.DateField(blank=True, null=True)
     time_taken = models.IntegerField(blank=True, null=True)
+
+    def play(self):
+        is_playing = True
+        is_paused = False
 
     def __unicode__(self):
         return self.task

@@ -77,6 +77,7 @@ function Task(data) {
     self.is_playing = ko.observable(data.fields.is_playing || false);
     self.timer = ko.observable('00:00:00');
     self.timer_is_running = ko.observable(false);
+    self.is_paused = ko.observable(data.fields.is_paused || false);
     self.time_taken = ko.observable(data.fields.time_taken ? data.fields.time_taken : 0);
     self.editing_time = ko.observable(false);
     self.editing_title = ko.observable(false);
@@ -108,6 +109,7 @@ function Task(data) {
     self.pause_timer = function() {
         clearInterval(self.interval_id);
         self.timer_is_running(false);
+        self.is_paused(true);
     };
 
     self.update_timer = function() {

@@ -21,7 +21,12 @@
                             <a href="#" class="btn disabled" data-bind="click: start_timer, visible: !timer_is_running(), css: {'disabled': !task()}">
                                     <i class="icon-play"></i>
                                 </a>
-                                <a href="#" class="btn disabled" data-bind="click: pause_timer, visible: timer_is_running, css: {'disabled': !task()}">
+                                <a href="#" class="btn disabled" 
+                                   data-bind="click: function(task) {
+                                                        pause_timer(); 
+                                                        $parent.save(task);
+                                                    },
+                                              visible: timer_is_running, css: {'disabled': !task()}">
                                     <i class="icon-pause"></i>
                                 </a>
 
