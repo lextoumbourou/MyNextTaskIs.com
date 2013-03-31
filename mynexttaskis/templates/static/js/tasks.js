@@ -185,14 +185,19 @@ function TaskListViewModel() {
         self.incomplete_tasks.push(self.empty_task());
     };
 
-    self.delete_task = function(task) {
+    self.delete_task = function(task, is_playing) {
         if (task.pk()) {
             $.ajax("/api/task/"+task.pk(), {
                 type: "delete",
                 success: function() {
-                    self.incomplete_tasks.remove(task);
-                    if (self.incomplete_tasks().length < 1) {
-                        self.add_empty_task();
+                    if (is_playing) {
+                        self.in_progress_task(self.empty_task());
+                    }
+                    else {
+                        self.incomplete_tasks.remove(task);
+                        if (self.incomplete_tasks().length < 1) {
+                            self.add_empty_task();
+                        }
                     }
                 },
             });
@@ -323,13 +328,10 @@ function TaskListViewModel() {
     self.sammy.run();
 };
 
-// Here's a custom Knockout binding that makes elements shown/hidden via jQuery's fadeIn()/fadeOut() methods
-// Could be stored in a separate utility library
 ko.bindingHandlers.fadeVisible = {
     init: function(element, valueAccessor) {
-        // Initially set the element to be instantly visible/hidden depending on the value
         var value = valueAccessor();
-        $(element).toggle(ko.utils.unwrapObservable(value)); // Use "unwrapObservable" so we can handle values that may or may not be observable
+        $(element).toggle(ko.utils.unwrapObservable(value));
     },
     update: function(element, valueAccessor) {
         // Whenever the value subsequently changes, slowly fade the element in or out

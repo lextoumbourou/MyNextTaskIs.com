@@ -48,7 +48,7 @@
                                 
                                 <a href="#" class="btn disabled" data-bind="click: function(task) { 
                                                                                        if (pk() != 0) {
-                                                                                               $parent.delete_task(task);
+                                                                                           $parent.delete_task(task, true);
                                                                                        };
                                                                                    },
                                                                             css: {'disabled': !task()}">
