@@ -1,0 +1,20 @@
+<div id="incomplete-tasks">
+    <!-- ko foreach: incomplete_tasks -->
+    <div class="task-list-element" data-bind="attr: {id: 'task-list-elem-'+pk()}" >
+        <button class="btn" data-bind="click: $parent.play_task"><i class="icon-play"></i></button>
+        <input class="span10 task-list-input" 
+        data-bind="value: task, 
+                   valueUpdate: 'afterkeydown', 
+                   event: { keypress: $parent.enter_event, 
+                            focus: function(task) { 
+                                if (!pk()) { 
+                                    $parent.save(task); 
+                                };
+                             },
+                            change: $parent.save,
+                         }, 
+                 hasfocus: true">
+        <button class="btn" data-bind="click: $parent.delete_task"><i class="icon-remove"></i></button>
+    </div>
+    <!-- /ko -->
+</div>

@@ -1,0 +1,16 @@
+<div id="completed-tasks" class="row">
+    <div class="span10" 
+        data-bind='template: { foreach: completed_tasks,
+                               beforeRemove: hide_task_element,
+                               afterAdd: show_task_element }'>
+            <blockquote>
+                <button type="button" class="close" data-dismiss="alert" data-bind="click: $parent.delete_task">&times;</button>
+                <b data-bind="click: edit_title, visible: !editing_title(), text: task"></b> 
+                <input class="input-xxlarge" data-bind="visible: editing_title, value: task, hasfocus: editing_title, event: { change: $parent.save }"></b> 
+                <br>
+                    <small data-bind="click: edit_time, visible: !editing_time(), text: formatted_date"></small>
+                    <input class="input-mini" data-bind="visible: editing_time, value: formatted_date, hasfocus: editing_time, event: { change: $parent.save }">
+            </blockquote>
+        </div>
+    </div>
+</div>

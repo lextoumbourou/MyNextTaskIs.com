@@ -1,0 +1,59 @@
+<!-- ko with: in_progress_task -->
+<input type="hidden" id="page_date" name="date" value="{{ date.date|date:'Ymd' }}" />
+<div id="task">
+    <div id="playing-task" class="row">
+        <div class="span12">
+            <form id="task-form">
+                <div class="task">
+                        <input name="task" placeholder="Type your next task" class="task-input span12" type="text" 
+                           value=""  data-bind="value: task, 
+                                                valueUpdate: 'afterkeydown',
+                                                event: { focus: function(task) { 
+                                                                    if (!pk()) { 
+                                                                        $parent.save(task); 
+                                                                    };
+                                                                 },
+                                                         change: $parent.save, }" />
+
+                    <input type="hidden" data-bind="value: pk" />
+                    <div>
+                        <div class="pull-left">
+                            <a href="#" class="btn disabled" data-bind="click: start_timer, visible: !timer_is_running(), css: {'disabled': !task()}">
+                                    <i class="icon-play"></i>
+                                </a>
+                                <a href="#" class="btn disabled" data-bind="click: pause_timer, visible: timer_is_running, css: {'disabled': !task()}">
+                                    <i class="icon-pause"></i>
+                                </a>
+
+
+                            <span data-bind="text: timer"></span>
+                        </div>
+
+                        <div class="pull-right">
+                            <a href="#" class="btn disabled" data-bind="click: function(task) {
+                                                                              if (pk()) {
+                                                                                  complete_task(),
+                                                                                  $parent.save(task);
+                                                                                  $parent.update_completed(task);
+                                                                              }
+                                                                             },
+                                                                            css: {'disabled': !task()}"/>
+                                    <i class="icon-ok"></i>
+                                </a>
+                                
+                                <a href="#" class="btn disabled" data-bind="click: function(task) { 
+                                                                                       if (pk() != 0) {
+                                                                                               $parent.delete_task(task);
+                                                                                       };
+                                                                                   },
+                                                                            css: {'disabled': !task()}">
+                                    <i class="icon-remove"></i>
+                                </a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- /ko -->
