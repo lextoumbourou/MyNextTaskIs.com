@@ -16,7 +16,7 @@
                                                          change: $parent.save, }" />
 
                     <input type="hidden" data-bind="value: pk" />
-                    <div>
+                    <div class="playing-task-options" data-bind="fadeVisible: task">
                         <div class="pull-left">
                             <a href="#" class="btn disabled" data-bind="click: start_timer, visible: !timer_is_running(), css: {'disabled': !task()}">
                                     <i class="icon-play"></i>
