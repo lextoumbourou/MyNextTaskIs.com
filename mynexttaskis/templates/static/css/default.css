@@ -2,7 +2,15 @@ html, body {
 }
 
 body {
-    margin-top: 100px;
+    background-color: #eee;
+}
+
+#wrap {
+    min-height: 1000px;
+    width: 1000px;
+    background-color: #fff;
+    margin: 10px auto;
+    border-radius: 15px;
 }
 
 header {
@@ -17,7 +25,6 @@ brand {
 }
 
 .task-list-element .btn {
-    background-color: #fff;
     opacity: 0.2;
 }
 
@@ -50,18 +57,10 @@ brand {
 }
 
 footer {
-    color: #fff;
-    background-color: #007FFF;
     width: 100%;
-    position: fixed;
     bottom: 0;
-    min-height: 30px;
-    padding-top: 10px;
-    text-align:center;
+    text-align: center;
 } 
-footer a {
-    color: #fff;
-}
 
 .completed_task {
   padding: 8px 35px 8px 14px;
@@ -76,7 +75,6 @@ footer a {
 }
 
 .input-append .add-on, .input-prepend .add-on {
-    background-color: #DFDFDF;
     border-color: #DFDFDF;
 }
 
@@ -92,9 +90,14 @@ footer a {
 
 #playing-task .btn {
     border-color: #fff;
-    background-color: #fff;
 }
 
 .playing-task-options {
     visibility: none;
+}
+
+.navbar-inner {
+    border: 0;
+    background: #fff;
+    margin-bottom: 60px;
 }

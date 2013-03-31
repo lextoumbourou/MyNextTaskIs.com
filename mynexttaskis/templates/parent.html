@@ -5,7 +5,7 @@
 <html lang="en">
     <head>
         <title>My Next Task Is...</title>
-        <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}/css/cosmo.css" />
+        <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}/bootstrap/css/bootstrap.min.css" />
 
         <script src="{{ STATIC_URL }}/js/jquery-1.8.2.min.js"></script>
         <script src="{{ STATIC_URL }}/js/vendor/sammy.js" type="text/javascript"></script>
@@ -14,45 +14,44 @@
         <link href="/static/css/default.css" rel="stylesheet">
     </head>
     <body>
-        <div class="navbar navbar-inverse navbar-fixed-top">
-            <div class="navbar-inner">
-                <div class="container">
-                    <ul class="nav" data-bind="foreach: sections">
-                        <li data-bind="css: { active: $data == $root.chosen_section_id() }">
-                            <a href="#" data-bind="text: $data,
-                                                   click: $root.go_to_section"></a>
-                       </li>
-                    </ul>
-                    <div class="pull-right">
-                        <ul class="nav">
-                            {% if user.is_authenticated %}
-                            {% if not user|is_lazy_user %}
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                    <i class="icon-user"></i> {{ user.username }} 
-                                    <b class="caret"></b>
-                                </a> 
-                                <ul class="dropdown-menu">
-                                    <li><a href="/profiles/edit/">Settings</a></li>
-                                    <li class="divider"></li>
-                                    <li><a href="/accounts/logout/">Log out</a></li>
-                                </ul>
-                            </li>
-                            {% else %}
-                            <li>
-                                <a href="/convert">Register</a>
-                            </li>
-                            <li>
-                                <a href="/accounts/login/">Sign in</a>
-                            </li>
-                            {% endif %}
-                            {% endif %}
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
         <div id="wrap">
+            <div class="container">
+                <div class="navbar">
+                    <div class="navbar-inner">
+                        <ul class="nav" data-bind="foreach: sections">
+                            <li data-bind="css: { active: $data == $root.chosen_section_id() }">
+                                <a href="#" data-bind="text: $data,
+                                                       click: $root.go_to_section"></a>
+                           </li>
+                        </ul>
+                        <div class="pull-right">
+                            <ul class="nav">
+                                {% if user.is_authenticated %}
+                                {% if not user|is_lazy_user %}
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                        <i class="icon-user"></i> {{ user.username }} 
+                                        <b class="caret"></b>
+                                    </a> 
+                                    <ul class="dropdown-menu">
+                                        <li><a href="/profiles/edit/">Settings</a></li>
+                                        <li class="divider"></li>
+                                        <li><a href="/accounts/logout/">Log out</a></li>
+                                    </ul>
+                                </li>
+                                {% else %}
+                                <li>
+                                    <a href="/convert">Register</a>
+                                </li>
+                                <li>
+                                    <a href="/accounts/login/">Sign in</a>
+                                </li>
+                                {% endif %}
+                                {% endif %}
+                            </ul>
+                        </div>
+                        </div>
+                    </div>
             <div class="container">
                 {% block content %}
                 {% csrf_token %}
@@ -64,7 +63,9 @@
             </div>
         </div>
         <footer class="footer">
-            Site by <a href="http://lextoumbourou.com">Lex Toumbourou</a> in 2012.
+            <div class="container">
+                A productivity experiment by <a href="http://lextoumbourou.com/">Lex Toumbourou</a> in 2013.
+            </div>
         </footer>
         <script src="http://code.jquery.com/jquery-latest.js"></script>
         <script src="/static/bootstrap/js/bootstrap.min.js"></script>

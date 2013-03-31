@@ -19,7 +19,11 @@ urlpatterns = patterns('',
     url(r'^humans.txt', direct_to_template,
         {'template': 'humans.txt', 'mimetype': 'text/plain'}),
     url(r'^api/', include('mynexttaskis.tasks.urls')),
-    url(r'^', direct_to_template, {
-            'template': 'parent.html'
-        }),
+    
+    url(r'^about/?', direct_to_template, {
+        'template': 'about.html'
+    }),
+    url(r'^/?', direct_to_template, {
+        'template': 'parent.html'
+    }),
 )
