@@ -2,12 +2,12 @@ html, body {
 }
 
 body {
-    background-color: #eee;
+    background-color: #fefefe;
 }
 
 #wrap {
-    min-height: 1000px;
-    width: 1000px;
+    min-height: 500px;
+    width: 980px;
     background-color: #fff;
     margin: 10px auto;
     border-radius: 15px;
@@ -83,7 +83,7 @@ footer {
 }
 
 #playing-task input {
-    font-size: 40px;
+    font-size: 30px;
     border: 0;
     height: 50px
 }

@@ -269,7 +269,7 @@ function TaskListViewModel() {
         elem.find('.btn').fadeOut(200);
         // Biggify task transition
         elem.find('input').css('position', 'absolute').animate({
-            'font-size': '40px',
+            'font-size': '30px',
             'top': top_task_pos.top,
             'left': top_task_pos.left,
         }, 500, function() {
