@@ -12,17 +12,11 @@
         {% block custom_head %}
         {% endblock %}
         <link href="/static/css/default.css" rel="stylesheet">
-        <style>
-            body {
-                margin-top: 80px;
-            }
-        </style>
     </head>
     <body>
         <div class="navbar navbar-inverse navbar-fixed-top">
             <div class="navbar-inner">
                 <div class="container">
-                    <a class="brand" href="/">My Next Task Is</a>
                     <ul class="nav" data-bind="foreach: sections">
                         <li data-bind="css: { active: $data == $root.chosen_section_id() }">
                             <a href="#" data-bind="text: $data,

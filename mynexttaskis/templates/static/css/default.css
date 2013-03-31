@@ -1,6 +1,10 @@
 html, body {
 }
 
+body {
+    margin-top: 100px;
+}
+
 header {
     margin-bottom: 50px;
 }
@@ -89,4 +93,8 @@ footer a {
 #playing-task .btn {
     border-color: #fff;
     background-color: #fff;
+}
+
+.playing-task-options {
+    visibility: none;
 }
