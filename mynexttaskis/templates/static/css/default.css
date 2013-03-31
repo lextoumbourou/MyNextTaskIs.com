@@ -1,5 +1,4 @@
 html, body {
-    height: 100%;
 }
 
 header {
@@ -33,12 +32,8 @@ brand {
     text-decoration: line-through;
 }
 
-#wrap {
-    min-height: 100%;
-}
 #main {
     overflow:auto;
-    padding-bottom:100px; /* this needs to be bigger than footer height*/
     padding-left:20px;
 }
 
@@ -50,15 +45,19 @@ brand {
     color: #3A87AD;
 }
 
-.footer {
-    position: relative;
-    margin-top: -50px; /* negative value of footer height */
-    height: 50px;
-    clear:both;
-    padding-top:60px;
+footer {
+    color: #fff;
+    background-color: #007FFF;
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    min-height: 30px;
+    padding-top: 10px;
     text-align:center;
-    text:#fff;
 } 
+footer a {
+    color: #fff;
+}
 
 .completed_task {
   padding: 8px 35px 8px 14px;
