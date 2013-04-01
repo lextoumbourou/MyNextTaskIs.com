@@ -352,7 +352,9 @@ function TaskListViewModel() {
                     if (data.length > 0)
                     {
                         var mapped_tasks = $.map(data, function(item) {
-                                return new Task(item)
+                                if (!item.fields.is_complete) {
+                                    return new Task(item)
+                                }
                         });
                         self.incomplete_tasks(mapped_tasks);
                     }
