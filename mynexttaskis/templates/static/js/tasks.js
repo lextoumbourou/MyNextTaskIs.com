@@ -338,7 +338,7 @@ function TaskListViewModel() {
             });
         });
 
-        this.get('', function() {
+        this.get('^/?(^.)*', function() {
             this.app.runRoute('get', '/#Now') }
         );
     });
