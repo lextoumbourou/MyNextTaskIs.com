@@ -62,7 +62,7 @@ def delete_task(request, task):
 @allow_lazy_user
 def get_active_task(request):
     """Return single active task as JSON"""
-    task = Task.objects.filter(user=request.user, is_complete=False)[:1]
+    task = Task.objects.filter(user=request.user, is_complete=False, is_in_progress=True)
     return HttpResponse(serializers.serialize('json', task)) 
 
 
@@ -102,6 +102,8 @@ def update_task(request, task):
         task.is_complete = json_data['is_complete']
     if 'is_paused' in json_data:
         task.is_paused = json_data['is_paused']
+    if 'is_in_progress' in json_data:
+        task.is_in_progress = json_data['is_in_progress']
     if 'time_taken' in json_data:
         task.time_taken = json_data['time_taken']
     if 'start_time' in json_data and json_data['start_time']:

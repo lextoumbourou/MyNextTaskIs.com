@@ -8,6 +8,7 @@ class Task(models.Model):
     is_complete = models.BooleanField()
     is_playing = models.BooleanField()
     is_paused = models.BooleanField()
+    is_in_progress = models.BooleanField()
     created = models.DateField()
     start_time = models.DateField(blank=True, null=True)
     end_time = models.DateField(blank=True, null=True)

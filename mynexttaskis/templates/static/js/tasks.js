@@ -74,10 +74,13 @@ function Task(data) {
     self.pk = ko.observable(data.pk);
     self.task = ko.observable(data.fields.task || '');
     self.is_complete = ko.observable(data.fields.is_complete);
-    self.is_playing = ko.observable(data.fields.is_playing || false);
     self.timer = ko.observable('00:00:00');
     self.timer_is_running = ko.observable(false);
+
     self.is_paused = ko.observable(data.fields.is_paused || false);
+    self.is_playing = ko.observable(data.fields.is_playing || false);
+    self.is_in_progress = ko.observable(data.fields.is_in_progress || false);
+
     self.time_taken = ko.observable(data.fields.time_taken ? data.fields.time_taken : 0);
     self.editing_time = ko.observable(false);
     self.editing_title = ko.observable(false);
@@ -109,6 +112,7 @@ function Task(data) {
     self.pause_timer = function() {
         clearInterval(self.interval_id);
         self.timer_is_running(false);
+        self.is_playing(false);
         self.is_paused(true);
     };
 
@@ -145,7 +149,7 @@ function Task(data) {
 
     self.time_as_editable = function() {
         return convert_to_date_string(self.time_taken());
-    }
+    };
 }
 
 function TaskListViewModel() {
@@ -161,11 +165,15 @@ function TaskListViewModel() {
         location.hash = section;
     };
 
-    self.empty_task = function() {
-        return new Task({pk: 0, fields: { task:"", is_complete:false }});
+    self.empty_task = function(in_progress) {
+        var empty = new Task({pk: 0, fields: { task:"", is_complete:false }});
+        if (in_progress) {
+            empty.is_in_progress(true);
+        }
+        return empty;
     };
 
-    self.in_progress_task = ko.observable(self.empty_task());
+    self.in_progress_task = ko.observable(self.empty_task(true));
     self.completed_tasks = ko.observableArray([]);
     self.incomplete_tasks = ko.observableArray([self.empty_task()]);
     self.date = $("#page_date").val();
@@ -191,7 +199,7 @@ function TaskListViewModel() {
                 type: "delete",
                 success: function() {
                     if (in_progress) {
-                        self.in_progress_task(self.empty_task());
+                        self.in_progress_task(self.empty_task(true));
                     }
                     else {
                         self.incomplete_tasks.remove(task);
@@ -210,7 +218,7 @@ function TaskListViewModel() {
             task.complete_task();
             $.post('/api/task/'+task.pk(), ko.toJSON(task), function() {
                 if (in_progress) {
-                    self.in_progress_task(self.empty_task());
+                    self.in_progress_task(self.empty_task(true));
                 }
                 else {
                     self.incomplete_tasks.remove(task);
@@ -240,7 +248,7 @@ function TaskListViewModel() {
     self.update_completed = function(task) {
         task.pause_timer();
         self.completed_tasks.push(task);
-        self.in_progress_task(self.empty_task());
+        self.in_progress_task(self.empty_task(true));
     };
 
     self.fade_in_element = function(element, index, data) {
@@ -274,6 +282,7 @@ function TaskListViewModel() {
             'left': top_task_pos.left,
         }, 500, function() {
                 task.start_timer();
+                task.is_in_progress(true);
                 self.in_progress_task(task);
                 location.hash = 'NowPlay';
             }
@@ -282,6 +291,7 @@ function TaskListViewModel() {
 
     self.queue_in_progress_task = function(task) {
         task.pause_timer();
+        task.is_in_progress(false);
         var elem = $("#incomplete-task");
         elem.find(".in-progress-task-options").fadeOut(200, function() {
             elem.find("input")
@@ -289,10 +299,13 @@ function TaskListViewModel() {
                 .animate({
                     'font-size':'5px', 'height':0, 
                     'width':0, 'top': '-=70px', 
-                    'left': '+=75px',}, 400, function() {
-
-                    self.in_progress_task(self.empty_task());
-                    self.incomplete_tasks.push(task);
+                    'left': '+=75px',}, 400, 
+                    function() {
+                        self.save(task);
+                        var empty_task = self.empty_task();
+                        empty_task.is_in_progress(true);
+                        self.in_progress_task(empty_task);
+                        self.incomplete_tasks.push(task);
                     });
         });
     };
@@ -308,7 +321,8 @@ function TaskListViewModel() {
                     self.in_progress_task(new Task(data[0]));
                 }
                 else {
-                    self.in_progress_task(self.empty_task());
+                    self.in_progress_task(self.empty_task(true));
+                    console.log(self.in_progress_task());
                 }
             });
         });

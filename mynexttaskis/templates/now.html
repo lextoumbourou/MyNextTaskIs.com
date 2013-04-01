@@ -10,7 +10,7 @@
                                                 valueUpdate: 'afterkeydown',
                                                 event: { focus: function(task) { 
                                                                     if (!pk()) { 
-                                                                        $parent.save(task); 
+                                                                        $parent.save(task, true); 
                                                                     };
                                                                  },
                                                          change: $parent.save, }" />
