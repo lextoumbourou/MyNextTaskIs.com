@@ -139,7 +139,6 @@ INSTALLED_APPS = (
     'profiles',
     'mynexttaskis.accounts',
     'mynexttaskis.tasks',
-    'mynexttaskis.next',
 )
 
 AUTHENTICATION_BACKENDS = (
