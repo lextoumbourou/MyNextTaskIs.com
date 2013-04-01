@@ -2,11 +2,11 @@ html, body {
 }
 
 body {
-    background-color: #fefefe;
+    background-color: #EFEFDF;
 }
 
 #wrap {
-    min-height: 500px;
+    min-height: 900px;
     width: 980px;
     background-color: #fff;
     margin: 10px auto;
@@ -102,3 +102,12 @@ footer {
     background: #fff;
     margin-bottom: 60px;
 }
+
+blockquote {
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.067);
+    padding: 15px;
+    border-radius: 10px;
+    width: 850px;
+}
+
+
