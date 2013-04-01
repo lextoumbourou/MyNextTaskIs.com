@@ -216,15 +216,24 @@ function TaskListViewModel() {
         if (task.pk()) {
             task.pause_timer();
             task.complete_task();
-            $.post('/api/task/'+task.pk(), ko.toJSON(task), function() {
-                if (in_progress) {
-                    self.in_progress_task(self.empty_task(true));
-                }
-                else {
-                    self.incomplete_tasks.remove(task);
-                }
-
-                self.completed_tasks.push(task);
+            var elem = $("#incomplete-task");
+            elem.find(".in-progress-task-options").fadeOut(200, function() {
+                elem.find("input")
+                .css({'position': 'absolute', 'box-shadow':'none'})
+                .animate({
+                    'font-size':'5px', 'height':0, 
+                    'width':0, 'top': '-=70px', 
+                    'left': '+=130px',}, 400, function() { 
+                        $.post('/api/task/'+task.pk(), ko.toJSON(task), function() {
+                            if (in_progress) {
+                                self.in_progress_task(self.empty_task(true));
+                            }
+                            else {
+                                self.incomplete_tasks.remove(task);
+                            }
+                            self.completed_tasks.push(task);
+                        });
+                    });
             });
         }
     };
