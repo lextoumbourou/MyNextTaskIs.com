@@ -280,6 +280,23 @@ function TaskListViewModel() {
         );
     };
 
+    self.queue_in_progress_task = function(task) {
+        task.pause_timer();
+        var elem = $("#incomplete-task");
+        elem.find(".in-progress-task-options").fadeOut(200, function() {
+            elem.find("input")
+                .css({'position': 'absolute', 'box-shadow':'none'})
+                .animate({
+                    'font-size':'5px', 'height':0, 
+                    'width':0, 'top': '-=70px', 
+                    'left': '+=75px',}, 400, function() {
+
+                    self.in_progress_task(self.empty_task());
+                    self.incomplete_tasks.push(task);
+                    });
+        });
+    };
+
     self.sammy = Sammy(function() {
         this.get('/#Now', function() {
             self.incomplete_tasks(null);

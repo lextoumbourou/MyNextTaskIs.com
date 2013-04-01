@@ -79,21 +79,21 @@ footer {
     border-color: #DFDFDF;
 }
 
-#playing-task {
+#incomplete-task {
     margin-bottom: 60px;
 }
 
-#playing-task input {
+#incomplete-task input {
     font-size: 30px;
     border: 0;
     height: 50px
 }
 
-#playing-task .btn {
+#incomplete-task .btn {
     border-color: #fff;
 }
 
-.playing-task-options {
+.in-progress-task-options {
     visibility: none;
 }
 

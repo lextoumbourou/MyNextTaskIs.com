@@ -14,7 +14,7 @@
                             change: $parent.save,
                          }, 
                  hasfocus: true">
-        <button class="btn" data-bind="click: $parent.delete_task"><i class="icon-remove"></i></button>
+                 <button class="btn" data-bind="click: function(task) { $parent.delete_task(task, false); }"><i class="icon-trash"></i></button>
     </div>
     <!-- /ko -->
 </div>
