@@ -25,20 +25,40 @@ brand {
     text-align:left;
 }
 
-.task-list-element .btn {
-    opacity: 0.2;
-}
-
-.task-list-element .btn:hover {
-    opacity: 1;
-}
-
 
 .task-list-input {
     border: 0;
     text-align:left;
     border-bottom: 1px solid #eee;
 }
+
+.task-list-element {
+    margin: 0 10px;
+}
+
+.task-list-element input {
+    margin-top:7px;
+}
+
+.task-list-element input:focus {
+    outline:none;
+}
+
+.task-list-element .btn {
+    background-color: #fff;
+    background-image: none;
+    border: none;
+    opacity: 0.2;
+}
+
+.task-list-element .btn:hover {
+    background-image: none;
+    border: none;
+    opacity: 1;
+}
+
+
+
 
 .completed-task {
     text-decoration: line-through;
@@ -109,5 +129,7 @@ blockquote {
     border-radius: 10px;
     width: 850px;
 }
+
+
 
 
