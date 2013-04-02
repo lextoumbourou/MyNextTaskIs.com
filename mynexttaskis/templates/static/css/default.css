@@ -57,9 +57,6 @@ brand {
     opacity: 1;
 }
 
-
-
-
 .completed-task {
     text-decoration: line-through;
 }
@@ -111,6 +108,9 @@ footer {
 
 #incomplete-task .btn {
     border-color: #fff;
+}
+#incomplete-task input::-webkit-input-placeholder { /* WebKit browsers */
+    padding-top: 7px;
 }
 
 .in-progress-task-options {

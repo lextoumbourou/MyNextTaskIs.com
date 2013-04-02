@@ -219,7 +219,7 @@ function TaskListViewModel() {
             var elem = $("#incomplete-task");
             elem.find(".in-progress-task-options").fadeOut(200, function() {
                 elem.find("input")
-                .css({'position': 'absolute', 'box-shadow':'none'})
+                .css({'position': 'relative', 'box-shadow':'none'})
                 .animate({
                     'font-size':'5px', 'height':0, 
                     'width':0, 'top': '-=70px', 
@@ -231,7 +231,6 @@ function TaskListViewModel() {
                             else {
                                 self.incomplete_tasks.remove(task);
                             }
-                            self.completed_tasks.push(task);
                         });
                     });
             });
@@ -277,23 +276,19 @@ function TaskListViewModel() {
     self.play_task = function(task) {
         // To do: pause currently "playing" task
         // here
-        var top_task = $(".task-list-element:first-child");
-        top_task_pos = top_task.position();
+        
         var elem = $("#task-list-elem-" + task.pk());
-        // Fade out the other tasks
-        elem.siblings().fadeOut(200);
-        // Hide the additional buttons
-        elem.find('.btn').fadeOut(200);
         // Biggify task transition
-        elem.find('input').css('position', 'absolute').animate({
+        elem.find('input').css({'position': 'relative'}).animate({
             'font-size': '30px',
-            'top': top_task_pos.top,
-            'left': top_task_pos.left,
-        }, 500, function() {
-                task.start_timer();
-                task.is_in_progress(true);
-                self.in_progress_task(task);
-                location.hash = 'NowPlay';
+        }, 300, function() {
+                $(".task-list-element").fadeOut(function() {
+                    
+                    self.in_progress_task(task);
+                    location.hash = 'NowPlay';
+                });
+
+               
             }
         );
     };
@@ -304,7 +299,7 @@ function TaskListViewModel() {
         var elem = $("#incomplete-task");
         elem.find(".in-progress-task-options").fadeOut(200, function() {
             elem.find("input")
-                .css({'position': 'absolute', 'box-shadow':'none'})
+                .css({'position': 'relative', 'box-shadow':'none'})
                 .animate({
                     'font-size':'5px', 'height':0, 
                     'width':0, 'top': '-=70px', 
@@ -314,7 +309,6 @@ function TaskListViewModel() {
                         var empty_task = self.empty_task();
                         empty_task.is_in_progress(true);
                         self.in_progress_task(empty_task);
-                        self.incomplete_tasks.push(task);
                     });
         });
     };
@@ -331,7 +325,6 @@ function TaskListViewModel() {
                 }
                 else {
                     self.in_progress_task(self.empty_task(true));
-                    console.log(self.in_progress_task());
                 }
             });
         });
@@ -339,6 +332,8 @@ function TaskListViewModel() {
         this.get('/#NowPlay', function() {
             self.incomplete_tasks(null);
             self.completed_tasks(null);
+            self.in_progress_task().start_timer();
+            self.in_progress_task().is_in_progress(true);
             self.chosen_section_id('Now');
         });
 
