@@ -2,6 +2,9 @@ from django.db import models
 from django.contrib import admin
 from django.contrib.auth.models import User
 
+class Category(models.Model):
+    name = models.CharField(max_length=200)
+
 class Task(models.Model):
     user = models.ForeignKey(User)
     task = models.CharField(max_length=200)
@@ -13,6 +16,7 @@ class Task(models.Model):
     start_time = models.DateField(blank=True, null=True)
     end_time = models.DateField(blank=True, null=True)
     time_taken = models.IntegerField(blank=True, null=True)
+    categories = models.ManyToManyField(Category)
 
     def play(self):
         is_playing = True
@@ -24,6 +28,8 @@ class Task(models.Model):
 class TaskAdmin(admin.ModelAdmin):
     pass
 
+class CategoryAdmin(admin.ModelAdmin):
+    pass
+
 admin.site.register(Task, TaskAdmin)
-
-
+admin.site.register(Category, CategoryAdmin)
