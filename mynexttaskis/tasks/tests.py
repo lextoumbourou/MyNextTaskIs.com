@@ -13,6 +13,7 @@ from django.core import serializers
 from django.contrib.auth.models import User
 
 from mynexttaskis.tasks.models import Task
+from mynexttaskis.tasks import utils
 
 
 class TasksTest(TestCase):
@@ -61,13 +62,13 @@ class TasksTest(TestCase):
         """Get playing task"""
         t = Task.objects.create(
                 user=self.user, task='Test task', 
-                created=datetime.today(), is_complete=False)
+                created=datetime.today(), is_complete=False, is_in_progress=True)
         response = self.client.get('/api/task/playing')
         task = Task.objects.filter(
-            user=self.user, is_complete=False)[0]
+            user=self.user, is_complete=False, is_in_progress=True)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
-            response.content, serializers.serialize('json', [task]))
+            response.content, serializers.serialize('json', task))
 
 
     def test_update_a_task(self):
@@ -98,3 +99,9 @@ class TasksTest(TestCase):
             '/api/task/', data=data, content_type='application/json')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(json.loads(response.content)[0]['fields']['task'], task_name)
+
+    def test_split_task(self):
+        """Test that a task is separate from its categories"""
+        task_string = "This is the task #Test1 #Test2"
+        result = ["Test1", "Test2"]
+        self.assertEqual(utils.get_categories(task_string), result)

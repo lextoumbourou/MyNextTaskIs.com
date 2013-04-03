@@ -8,7 +8,8 @@ from django.template import RequestContext
 from django.shortcuts import render_to_response
 from lazysignup.decorators import allow_lazy_user
 
-from mynexttaskis.tasks.models import Task
+from mynexttaskis.tasks.models import Task, Category
+from mynexttaskis.tasks import utils
 import mynexttaskis.settings as settings
 
 
@@ -38,9 +39,16 @@ def create_task(request):
     """Create a new task and return json data for the task"""
     json_data = json.loads(request.raw_post_data)
     if 'task' in json_data:
+        task_string = json_data['task']
+        categories = utils.get_categories(task_string)
         task = Task.objects.create(
-            user=request.user, task=json_data['task'],
+            user=request.user, task=task_string,
             is_complete=False, created=datetime.today())
+        task.save()
+        for category in categories:
+            # Add category if it doesn't exist
+            obj, created = Category.objects.get_or_create(name=category)
+            task.categories.add(obj)
 
     return HttpResponse(serializers.serialize('json', [task])) 
 
@@ -98,6 +106,7 @@ def update_task(request, task):
     json_data = json.loads(request.raw_post_data)
     if 'task' in json_data:
         task.task = json_data['task']
+        categories = utils.get_categories(json_data['task'])
     if 'is_complete' in json_data:
         task.is_complete = json_data['is_complete']
     if 'is_paused' in json_data:
@@ -114,6 +123,11 @@ def update_task(request, task):
             int(json_data['end_time']) / 1000)
 
     task.save()
+
+    for category in categories:
+        # Add category if it doesn't exist
+        obj, created = Category.objects.get_or_create(name=category)
+        task.categories.add(obj)
 
     data = serializers.serialize('json', [task])
     return HttpResponse(data)
