@@ -32,6 +32,11 @@
 
 
                             <span data-bind="text: timer"></span>
+                            <a href="#" class="btn disabled" 
+                                data-bind="click: function(task) { $parent.queue_in_progress_task(task); }, 
+                                           css: {'disabled': !task()}">
+                                <i class="icon-share-alt"></i>
+                            </a>
                             
                         </div>
 
@@ -41,11 +46,7 @@
                                           css: {'disabled': !task()}"/>
                                     <i class="icon-ok"></i>
                             </a>
-                            <a href="#" class="btn disabled" 
-                                data-bind="click: function(task) { $parent.queue_in_progress_task(task); }, 
-                                           css: {'disabled': !task()}">
-                                <i class="icon-share-alt"></i>
-                            </a>
+                            
                                 
                             <a href="#" class="btn disabled" 
                                data-bind="click: function(task) { $parent.delete_task(task, true); },
