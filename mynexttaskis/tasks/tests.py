@@ -12,7 +12,7 @@ from django.test.client import Client
 from django.core import serializers
 from django.contrib.auth.models import User
 
-from mynexttaskis.tasks.models import Task
+from mynexttaskis.tasks.models import Task, Category
 from mynexttaskis.tasks import utils
 
 
@@ -100,8 +100,23 @@ class TasksTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(json.loads(response.content)[0]['fields']['task'], task_name)
 
-    def test_split_task(self):
+    def test_get_categories(self):
         """Test that a task is separate from its categories"""
         task_string = "This is the task #Test1 #Test2"
         result = ["Test1", "Test2"]
         self.assertEqual(utils.get_categories(task_string), result)
+
+    def test_get_tasks_by_category(self):
+        task_name = 'test Task 2'
+        category, created = Category.objects.get_or_create(name="Test")
+        t = Task.objects.create(
+            user=self.user, task=task_name,
+            created=datetime.today(), is_complete=False)
+        t.save()
+        t.categories.add(category)
+
+        response = self.client.get(
+                '/api/task/category?categories=Test')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            json.loads(response.content)[0]['fields']['task'], task_name)

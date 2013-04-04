@@ -23,7 +23,7 @@ def request_dispatcher(request, task=None):
     # GET - /api/task/playing - Return playing task
     elif (request.method == 'GET') and (task == 'playing'):
         return get_active_task(request)
-    # GET - /api/task/category?categories[]=Blah 
+    # GET - /api/task/category?categories=Blah,Test,Moo
     # Return tasks that match categories
     elif (request.method == 'GET') and (task == 'category'):
         return get_tasks_by_category(request)
@@ -116,6 +116,7 @@ def update_task(request, task):
     date = get_date(request)
     user = request.user
     task = Task.objects.get(pk=task)
+    categories = []
 
     if task.user != user:
         return HttpResponse(status=401) 
