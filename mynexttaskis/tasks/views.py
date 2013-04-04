@@ -23,6 +23,10 @@ def request_dispatcher(request, task=None):
     # GET - /api/task/playing - Return playing task
     elif (request.method == 'GET') and (task == 'playing'):
         return get_active_task(request)
+    # GET - /api/task/category?categories[]=Blah 
+    # Return tasks that match categories
+    elif (request.method == 'GET') and (task == 'category'):
+        return get_tasks_by_category(request)
     # POST - /api/task/<int> - Update task and return all tasks
     elif (request.method == 'POST') and (task is not None) and task.isdigit():
         return update_task(request, task)
@@ -33,6 +37,19 @@ def request_dispatcher(request, task=None):
     elif (request.method == 'DELETE') and (task is not None) and task.isdigit():
         return delete_task(request, task)
 
+
+@allow_lazy_user
+def get_tasks_by_category(request):
+    """
+    Get tasks by category
+    """
+    tasks = []
+    if 'categories' in request.GET:
+        categories = request.GET['categories'].split(',')
+        tasks = Task.objects.filter(
+            user=request.user, categories__name__in=categories)
+
+    return HttpResponse(serializers.serialize('json', tasks))
 
 @allow_lazy_user
 def create_task(request):
